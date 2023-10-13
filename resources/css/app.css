@@ -1,0 +1,91 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+@layer utilities {
+  .my-container {
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 32px;
+    padding-right: 32px;
+    width: 100%;
+    max-width: 1650px;
+  }
+
+  @media (max-width: 1024px) {
+    .my-container {
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+  }
+
+  .wrap {
+    min-height: 100vh;
+  }
+
+  .content {
+    padding-top: 64px;
+    min-height: calc(100vh);
+  }
+  .aside-h {
+    min-height: calc(100vh - 64px);
+  }
+  .auth-wrap {
+    min-height: calc(100vh - 64px);
+  }
+
+  .modal-h {
+    height: calc(100vh - 64px);
+  }
+
+  .header-bg {
+    background-color: #221f1f;
+  }
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.overlay .main {
+  position: fixed;
+  z-index: 2;
+  top: 64px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  background: #3a2f2f7e;
+}
+
+.admin_header-color {
+  background-color: rgb(30, 42, 56);
+}
+
+.admin_content-width {
+  min-height: calc(100vh - 48px);
+}
+
+
+
+.my-alert {
+  border: 0;
+  transition: .3s;
+  height: 64px;
+  display: block;
+}
+
+.show-alert {
+  top: 0;
+  opacity: 1;
+}
+
+.hidden-alert {
+  top: -64px;
+  opacity: .0 ;
+}
