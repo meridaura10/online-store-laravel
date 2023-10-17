@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Admin\Attribute;
+namespace App\Http\Livewire\Admin\Property;
 
 use App\Http\Livewire\Admin\Datatable\Table;
 use App\Http\Livewire\Admin\Datatable\Util\Action;
@@ -9,24 +9,30 @@ use App\Http\Livewire\Admin\Datatable\Util\Column;
 use App\Http\Livewire\Admin\Datatable\Util\Columns;
 use App\Http\Livewire\Admin\Datatable\Util\Filter;
 use App\Http\Livewire\Admin\Datatable\Util\Filters;
-use App\Models\Attribute;
+use App\Models\Property;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Livewire\Component;
 
 class Index extends Table
 {
-    public function title(): string{
-        return 'Attributes';
+    public function model(): string
+    {
+        return Property::class;
     }
-    public function model():string{
-        return Attribute::class;
+    public function title(): string
+    {
+        return 'Properties';
     }
-    public function extendQuery(\Illuminate\Contracts\Database\Eloquent\Builder $builder){
-        $builder->with('translations');
+    public function createdLink()
+    {
+        return route('admin.properties.create');
     }
-    public function createdLink(){
-        return route('admin.attributes.create');
-    } 
-    public function columns():Columns{
+    public function extendQuery(Builder $builder)
+    {
+        return $builder->with('values.translations','translations','parent.translations');
+    }
+    public function columns(): Columns
+    {
         return new Columns(
             new Column(
                 key: 'id',
@@ -37,12 +43,13 @@ class Index extends Table
                 title: 'title',
             ),
             new Column(
-                key: 'property.title',
-                title: 'property',
+                key: 'parent.title',
+                title: 'parent',
             ),
             new Column(
-                key: 'categories',
-                title: 'categories',
+                key: 'values',
+                title: 'values',
+                view: 'admin.property.columns.values'
             ),
             new Column(
                 key: 'created_at',
@@ -62,8 +69,8 @@ class Index extends Table
                 icon: 'ri-delete-bin-line',
                 confirm: true,
                 style: 'btn-red',
-                confirm_title: 'delete attribute?',
-                confirm_description: 'confirm delete attribute',
+                confirm_title: 'delete property?',
+                confirm_description: 'confirm delete property',
             ),
         );
     }
@@ -75,15 +82,15 @@ class Index extends Table
                 title: 'пошук',
             ),
             new Filter(
-                key: 'searchToProperty',
-                title: 'пошук за характеристикой',
+                key: 'searchToValue',
+                title: 'пошук за значенням',
             ),
         );
     }
-    public function actionDestroy(Attribute $attribute){
-        $attribute->delete();
+    public function actionDestroy(Property $property){
+        $property->delete();
     }
-    public function actionEdit(Attribute $attribute){
-        return redirect()->route('admin.attributes.edit',$attribute->id);
+    public function actionEdit(Property $property){
+        return redirect()->route('admin.properties.edit',$property->id);
     }
 }

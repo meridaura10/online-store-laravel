@@ -32,9 +32,9 @@
                         options
                     </li>
                 </a>
-                <a href="{{ route('admin.attributes.index') }}">
+                <a href="{{ route('admin.properties.index') }}">
                     <li class="hover:bg-gray-700 transition-all rounded-lg py-1 px-2">
-                        attributes
+                        properties
                     </li>
                 </a>
             </ul>

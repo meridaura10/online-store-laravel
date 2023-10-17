@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\Option;
 use App\Models\OptionValue;
 use App\Models\Product;
+use App\Models\Property;
 use App\Models\Sku;
 use App\Models\SkuImage;
 use Exception;
@@ -23,7 +24,7 @@ class Form extends Component
 {
     public Product $product;
     public $properties;
-    public $selectedAttributesValue;
+    public $selectedPropertiesValue;
     public $selectedCategories = [];
     public array $translations = [];
     public $categories;
@@ -42,20 +43,19 @@ class Form extends Component
     public function mount(Product $product)
     {
         $this->product = $product->load([
-            'attributesValues.attribute.property.translations',
-            'attributesValues.attribute.values.translations',
-            'attributesValues.attribute.translations'
+            'propertiesValues.property.parent.translations',
+            'propertiesValues.property.values.translations',
+            'propertiesValues.property.translations'
         ]);
 
         $this->selectedCategories = $product->categories->pluck('id')->toArray();
 
-        $this->selectedAttributesValue = $product->attributesValues
-            ->pluck('id', 'attribute.id')
+        $this->selectedPropertiesValue = $product->propertiesValues
+            ->pluck('id', 'property.id')
             ->toArray();
-
-        $this->properties = $product->attributesValues
+        $this->properties = $product->propertiesValues
             ->mapToGroups(function ($value) {
-                return [$value->attribute->property->title => $value->attribute];
+                return [$value->property->parent->title => $value->property];
             })
             ->toArray();
 
@@ -70,7 +70,7 @@ class Form extends Component
             )
             ->whereNull('parent_id')->get();
 
-        $this->options = Option::query()->get()->toArray();
+        $this->options = Option::query()->with('translations', 'values.translations')->get()->toArray();
         $this->skus = $product->skus()->with(
             'values.option.values',
             'images',
@@ -90,7 +90,7 @@ class Form extends Component
             'product.status' => ['boolean'],
             'product.brand_id' => ['required', 'exists:brands,id'],
             'skus' => ['required', 'array'],
-            'selectedAttributesValue' => ['required'],
+            'selectedPropertiesValue' => ['required'],
             'selectedCategories' => ['required'],
         ];
 
@@ -115,30 +115,30 @@ class Form extends Component
     }
     public function updatedSelectedCategories($selectedCategoriesIds)
     {
-        $this->selectedAttributesValue = [];
+        $this->selectedPropertiesValue = [];
 
         $categoryIds = array_map('intval', $selectedCategoriesIds);
 
-        $attributes =  Attribute::query()
+        $properties =  Property::query()
             ->whereHas('categories', function ($query) use ($categoryIds) {
                 $query->whereIn('category_id', $categoryIds);
             })
-            ->with(['property.translations', 'values.translations', 'translations'])
+            ->with(['parent.translations', 'values.translations', 'translations'])
             ->get();
 
 
-        $this->properties = $attributes->mapToGroups(function ($attribute) {
+        $this->properties = $properties->mapToGroups(function ($property) {
 
-            $hasAttribute = $this->product
-                ->attributesValues()
-                ->whereHas('attribute', function ($query) use ($attribute) {
-                    return $query->where('attribute_id', $attribute->id);
+            $hasProperty= $this->product
+                ->propertiesValues()
+                ->whereHas('property', function ($query) use ($property) {
+                    return $query->where('property_id', $property->id);
                 })
                 ->first();
 
-            $this->selectedAttributesValue[$attribute->id] = $hasAttribute?->id;
+            $this->selectedPropertiesValue[$property->id] = $hasProperty?->id;
 
-            return [$attribute->property->title => $attribute];
+            return [$property->parent->title => $property];
         })->toArray();
     }
 
@@ -156,7 +156,7 @@ class Form extends Component
 
         $this->product->categories()->sync($this->data['data']['selectedCategories']);
 
-        $this->product->attributesValues()->sync($this->data['data']['selectedAttributesValue']);
+        $this->product->propertiesValues()->sync($this->data['data']['selectedPropertiesValue']);
 
         $this->product->update($this->data['data']['translations']);
 

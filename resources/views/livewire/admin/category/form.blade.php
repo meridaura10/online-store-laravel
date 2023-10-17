@@ -5,24 +5,42 @@
 
                 @include('ui.form.translations', ['fields' => [['name' => 'name', 'type' => 'input']]])
 
-                @include('ui.form.checkbox', [
-                    'id' => 'status',
-                    'label' => trans('base.status'),
-                    'model' => 'category.status',
-                ])
-                @include('ui.form.select',[
-                    'id' => 'category',
-                    'label' => 'parent category',
-                    'options' => $categories,
-                    'keyName' => 'id',
+                @include('ui.form.selectSearch', [
                     'valueName' => 'name',
-                    'default' => 'виберіть батьківську категорію(не обов`язково)',
-                    'model' => 'category.parent_id',
+                    'label' => 'parent category',
+                    'model' => 'parent',
+                    'value' => $parent['name'] ?? 'виберіть батьківську категорію( не обов`язково )',
+                    'options' => $categories,
+                    'searchModel' => 'searchCategory',
                 ])
-                <div>
+                <div class="my-6">
+                    <div class="h-24 flex justify-between items-end">
+                        @if ($image)
+                            <div class="h-full">
+                                <img class="h-full w-full object-contain"
+                                    src="{{ $image->url ?? $image->temporaryUrl() }}" alt="">
+                            </div>
+                        @endif
+                        <div>
+                            @include('ui.form.file', [
+                                'model' => 'image',
+                                'label' => 'new image',
+                                'multiple' => false,
+                            ])
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between">
                     <button class='btn btn-accent'>
                         {{ trans('base.save') }}
                     </button>
+                    <div class="mr-8">
+                        @include('ui.form.checkbox', [
+                            'id' => 'status',
+                            'label' => trans('base.status'),
+                            'model' => 'category.status',
+                        ])
+                    </div>
                 </div>
             </div>
         </div>

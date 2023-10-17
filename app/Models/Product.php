@@ -30,12 +30,13 @@ class Product extends Model
     {
         return $this->hasOne(Sku::class);
     }
-    public function attributes()
+    public function properties()
     {
-        return $this->hasMany(ProductAttribute::class);
+        return $this->hasMany(ProductProperty::class);
     }
-    public function attributesValues(){
-        return $this->belongsToMany(attributeValue::class,'product_attributes');
+    public function propertiesValues()
+    {
+        return $this->belongsToMany(PropertyValue::class, 'product_properties');
     }
     public function scopeSearch($query, $value)
     {

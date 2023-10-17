@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\AttributeValue;
 use App\Models\Product;
+use App\Models\PropertyValue;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,10 +13,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('product_attributes', function (Blueprint $table) {
+        Schema::create('product_properties', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Product::class)->constrained()->cascadeOnDelete();
-            $table->foreignIdFor(AttributeValue::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(PropertyValue::class)->constrained()->cascadeOnUpdate();
             $table->timestamps();
         });
     }
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('product_attributes');
+        Schema::dropIfExists('product_properties');
     }
 };

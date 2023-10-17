@@ -63,21 +63,21 @@
                     @if (count($selectedCategories))
                         @component('ui.components.accordion', ['title' => 'properties product'])
                             <ul class="p-4 grid gap-4 pt-0">
-                                @foreach ($properties as $key => $attributes)
+                                @foreach ($properties as $key => $subProperties)
                                     <li>
                                         <div class="text-xl font-bold">
                                             {{ $key }}
                                         </div>
                                         <ul class="grid gap-2">
-                                            @foreach ($attributes as $attribute)
+                                            @foreach ($subProperties as $subProperty)
                                                 <li class="flex justify-between items-center">
                                                     <span
-                                                        class="w-full before:w-full gap-3 whitespace-nowrap before:h-[1px] before:block before:mb-1 flex flex-row-reverse items-end before:bg-gray-400">{{ $attribute['title'] }}</span>
+                                                        class="w-full before:w-full gap-3 whitespace-nowrap before:h-[1px] before:block before:mb-1 flex flex-row-reverse items-end before:bg-gray-400">{{ $subProperty['title'] }}</span>
                                                     <div class="pl-3 w-full">
                                                         @include('ui.form.select', [
                                                             'label' => null,
-                                                            'model' => "selectedAttributesValue.{$attribute['id']}",
-                                                            'options' => $attribute['values'],
+                                                            'model' => "selectedPropertiesValue.{$subProperty['id']}",
+                                                            'options' => $subProperty['values'],
                                                             'isArray' => true,
                                                             'default' => 'пусто',
                                                             'defaultDisabled' => false,

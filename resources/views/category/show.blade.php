@@ -3,6 +3,6 @@
 
 @section('content')
     <div class="my-container">
-        @livewire('category.show',['category' => $category])
+        @livewire('category.show',compact('category'))
     </div>
 @endsection

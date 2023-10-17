@@ -4,44 +4,25 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
-use App\Models\Area;
-use App\Models\attributeValue;
-use App\Models\BrandCategory;
-use App\Models\CategoryProduct;
-use App\Models\City;
+
 use App\Models\OptionValue;
-use App\Models\Order;
 use App\Models\Product;
 use App\Models\Property;
-use App\Models\Sku;
-use App\Models\SkuImage;
-use App\Models\SkuRating;
 use App\Models\SkuReview;
-use App\Models\SkuVariation;
-use App\Models\Attribute;
-use App\Models\AttributeCategory;
 use App\Models\Category;
-use App\Models\ProductAttribute;
 use App\Models\User;
-use Database\Factories\CategoryBrandFactory;
-use Database\Factories\UserFactory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
+
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-
-        Property::factory(10)->create();
-        Attribute::factory(10)->create();
-        attributeValue::factory(30)->create();
-
         $this->call([
             BrandSeeder::class,
             CategorySeeder::class,
-            AttributeSeed::class,
+            PropertySeed::class,
             OptionValueSeeder::class,
             AdminSeed::class,
             BrandCategorySeeder::class,
@@ -60,13 +41,13 @@ class DatabaseSeeder extends Seeder
             $product->categories()->sync($categories);
 
             foreach ($categories as $category) {
-                $att = $category->attributes()->with('values')->get()->toArray();
+                $properties = $category->properties()->with('values')->get()->toArray();
 
-                $properties = array_map(function ($item) {
+                $propertyValueIds = array_map(function ($item) {
                     return $item['values'][0]['id'];
-                }, $att);
-                // dd($properties);
-                $product->attributesValues()->sync($properties);
+                }, $properties);
+
+                $product->propertiesValues()->sync($propertyValueIds);
             }
 
             for ($i = 0; $i < fake()->numberBetween(2, 4); $i++) {

@@ -21,16 +21,18 @@ class Show extends Component
     protected $listeners  = ['save-new-review' => 'saveReview'];
     public function mount(Sku $sku)
     {
-        $this->sku = $sku->load(['product.attributesValues.attribute.translations','product.attributesValues.translations','product.attributesValues.attribute.property.translations']);
-        $this->skus = $sku->product->skus()->with('values.option', 'variations')->get();
+        $this->sku = $sku->load(['product.propertiesValues.property.translations','product.propertiesValues.translations','values.translations']);
+        $this->skus = $sku->product->skus()->with('values.translations', 'variations','values.option.translations')->get();
         $this->reviews = $this->sku->reviews;
         $this->options = $this->mapSkuToOptionsValues($this->skus);
         $this->quantityOptions = count($this->sku->values);
         $this->setOptionsSku();
         $this->filter(null);
-        $this->properties = $sku->product->attributesValues->mapToGroups(function($item) {
-            return [$item->attribute->property->title => $item];
+        $this->properties = $sku->product->propertiesValues->mapToGroups(function($item) {
+            return [$item->property->parent->title => $item];
         })->toArray();
+
+        // dd($this->properties);  
     }
     public function saveReview(SkuReview $skuReview)
     {

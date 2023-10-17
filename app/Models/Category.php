@@ -18,8 +18,8 @@ class Category extends Model
     {
         return $this->belongsToManyf(Product::class);
     }
-    public function attributes(){
-        return $this->belongsToMany(Attribute::class);
+    public function properties(){
+        return $this->belongsToMany(Property::class);
     }
     public function image()
     {
@@ -31,11 +31,12 @@ class Category extends Model
     }
     public function parent()
     {
-        return $this->belongsTo(Category::class, 'parent_id');
+        return $this->belongsTo(self::class, 'parent_id');
     }
     public function subcategories()
     {
-        return $this->hasMany(Category::class, 'parent_id');
+        // ->with('subcategories','translations');
+        return $this->hasMany(self::class, 'parent_id');
     }
     public function scopeStatus($query, $value)
     {
@@ -45,10 +46,10 @@ class Category extends Model
     {
         return $query->where('parent_id', $value);
     }
-    // public function scopeSearch($query, $value)
-    // {
-    //     return $query->where('name', 'like', '%' . $value . '%');
-    // }
+    public function scopeSearch($query, $value)
+    {
+        return $query->whereTranslationLike('name', "%$value%");
+    }
     public function scopeOrderByBrands($query, $key, $direction)
     {
         return $query->with([$key => function ($query) use ($direction) {

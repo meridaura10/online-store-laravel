@@ -12,12 +12,20 @@ use Illuminate\Support\Facades\Storage;
 
 class HomeController extends Controller
 {
-    public function index(){
-        $categories = Category::whereNull('parent_id')->get();
-        $skus = Sku::inRandomOrder()->limit(30)->get();
-        return view('home.index',[
-            'categories' => $categories,
-            'skus' => $skus,
+    public function index()
+    {
+
+        $products = Product::query()
+            ->with('sku', 'skus.values', 'sku.bannerImage')
+            ->whereHas('skus', function ($q) {
+                $q->where('skus.quantity', '>', 0);
+            })
+            ->where('status', 1)
+            ->limit(30)
+            ->get();
+
+        return view('home.index', [
+            'products' => $products,
         ]);
     }
 }

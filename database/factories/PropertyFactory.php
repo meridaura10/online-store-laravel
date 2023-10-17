@@ -32,6 +32,8 @@ class PropertyFactory extends Factory
             }
 
             $Property->save();
+
+
             gc_collect_cycles();
         });
     }

@@ -141,14 +141,14 @@
         </div>
         <div class="mt-3">
             <ul>
-                @foreach ($properties as $key => $attributesValues)
+                @foreach ($properties as $key => $propertiesValues)
                     <li class="mb-4">
                         <h2 class="text-xl mb-2 font-bold">{{ $key }}</h2>
                         <ul class="grid gap-3">
-                            @foreach ($attributesValues as $attrubuteValue)
+                            @foreach ($propertiesValues as $propertiesValue)
                                 <li class="flex items-center"> <span
-                                        class="w-[40%] before:w-full gap-3 whitespace-nowrap before:h-[1px] before:block before:mb-1 flex flex-row-reverse items-end before:bg-gray-300">{{ $attrubuteValue['attribute']['title'] }}</span>
-                                    <span class="pl-3">{{ $attrubuteValue['value'] }}</span>
+                                        class="w-[40%] before:w-full gap-3 whitespace-nowrap before:h-[1px] before:block before:mb-1 flex flex-row-reverse items-end before:bg-gray-300">{{ $propertiesValue['property']['title'] }}</span>
+                                    <span class="pl-3">{{ $propertiesValue['value'] }}</span>
                                 </li>
                             @endforeach
                         </ul>

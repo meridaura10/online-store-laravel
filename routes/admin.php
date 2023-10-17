@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\OptionController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\PropertyController;
 use App\Http\Controllers\Admin\SeoController;
 use Illuminate\Support\Facades\Route;
 
@@ -47,8 +48,8 @@ Route::prefix('options')->name('options.')->controller(OptionController::class)-
     Route::get('/{option}/edit', 'edit')->name('edit');
 });
 
-Route::prefix('attributes')->name('attributes.')->controller(AttributeController::class)->group(function () {
+Route::prefix('properties')->name('properties.')->controller(PropertyController::class)->group(function () {
     Route::get('/', 'index')->name('index');
     Route::get('/create', 'create')->name('create');
-    Route::get('/{attribute}/edit', 'edit')->name('edit');
+    Route::get('/{property}/edit', 'edit')->name('edit');
 });
