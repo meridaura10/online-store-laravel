@@ -3,24 +3,22 @@
 namespace App\Services\Payments;
 
 use App\Contracts\Payments\PaymentSystemInterface;
-use App\Enums\OrderStatusEnum;
 use App\Enums\Payment\PaymentStatusEnum;
-use App\Enums\ProjectPaymentEnum;
-use App\Models\Order;
 use App\Models\Payment;
-use App\Models\Project;
-use App\Models\ProjectDonate;
-use Exception;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
-use App\Services\SDK\LiqPay;
+use App\SDK\LiqPay;
+use App\Services\OrderService;
+use Illuminate\Http\Request;
 
 class LiqPayService implements PaymentSystemInterface
 {
     private $liqPay;
     public function __construct()
     {
-        $this->liqPay = new LiqPay;
+        try {
+            $this->liqPay = new LiqPay;
+        } catch (\Throwable $th) {
+            dd($th);
+        }
     }
     public function createCheckoutUrl(Payment $payment, $route): string|false
     {
@@ -28,8 +26,8 @@ class LiqPayService implements PaymentSystemInterface
 
             $url = $this->liqPay->checkout($payment, $route);
 
-            PaymentService::updatePaymentPageUrl($payment,$url);
-            
+            PaymentService::updatePaymentPageUrl($payment, $url);
+
             return $url;
         } catch (\Throwable $th) {
             return false;
@@ -56,5 +54,14 @@ class LiqPayService implements PaymentSystemInterface
         } catch (\Throwable $th) {
             return PaymentStatusEnum::Declined;
         }
+    }
+    public function response(Request $request, Payment $payment)
+    {
+        $orderService = new OrderService;
+        $status = $this->getStatus($payment);
+        $payment->update([
+            'status' => $status,
+        ]);
+        $orderService->updateStatus($payment->payable,$status);
     }
 }

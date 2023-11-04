@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Http\Livewire\Admin\Datatable\Util;
-use App\Http\Livewire\Admin\Datatable\Util\AbstractCollection;
+
 use App\Http\Livewire\Admin\Datatable\Util\Filter;
+use App\Http\Livewire\Util\AbstractCollection;
 
 class Filters extends AbstractCollection{
     public function __construct(Filter ... $filters){

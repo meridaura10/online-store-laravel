@@ -21,7 +21,7 @@ class ProductFactory extends Factory
             'status' => 1,
         ];
     }
-    
+
     public function configure()
     {
         return $this->afterCreating(function (Product $product) {
@@ -31,7 +31,6 @@ class ProductFactory extends Factory
                 $faker = Faker::create($lang->regional());
                 $product->translateOrNew($lang->key())->name = $faker->realText(30);
             }
-
             $product->save();
             gc_collect_cycles();
         });

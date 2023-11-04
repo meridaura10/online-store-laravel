@@ -14,6 +14,8 @@ class CabinetController extends Controller
         return view('cabinet.orders');
     }
     public function user(){
-        return view('cabinet.user');
+        return view('cabinet.user',[
+            'user' => auth()->user(),
+        ]);
     }
 }

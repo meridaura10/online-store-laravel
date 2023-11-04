@@ -55,6 +55,10 @@ class Checkout extends Component
             $this->paymentSystem = PaymentSystemEnum::LiqPay->value;
         }
     }
+    public function selectCashPayment()
+    {
+        $this->paymentSystem = PaymentTypeEnum::Cash->value;
+    }
     public function updatedSearchArea($value)
     {
 
@@ -97,9 +101,9 @@ class Checkout extends Component
         $rules['city'] = ['required'];
         $rules['warehouse'] = ['required'];
         $rules['paymentType'] = ['required'];
-        if ($this->paymentType === PaymentTypeEnum::Card->value) {
-            $rules['paymentSystem'] = ['required'];
-        }
+
+        $rules['paymentSystem'] = ['required'];
+
         $rules['orderCustomer.last_name'] = ['required'];
         $rules['orderCustomer.first_name'] = ['required'];
         $rules['orderCustomer.patronymics'] = ['required'];
@@ -122,6 +126,7 @@ class Checkout extends Component
         if ($url) {
             redirect($url);
         }
+        
         alert()->open($this);
     }
     public function render()

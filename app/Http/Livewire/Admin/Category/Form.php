@@ -17,6 +17,7 @@ class Form extends Component
     public $translations;
     public $searchCategory;
     public $image;
+    public $searchNotCategoryIds;
     public function mount(Category $category)
     {
         $this->category = $category;
@@ -26,6 +27,14 @@ class Form extends Component
         }
 
         $this->parent = $category->parent()->with('translations')->first()?->toArray();
+
+        $this->searchNotCategoryIds = $this->category->subcategories->pluck('id')->toArray();
+
+        array_push($this->searchNotCategoryIds, $category->id);
+
+        foreach ($this->category->subcategories as $category) {
+            $this->searchNotCategoryIds = [...$this->searchNotCategoryIds, ...$category->subcategories->pluck('id')];
+        }
 
         $this->categories = collect();
 
@@ -55,7 +64,11 @@ class Form extends Component
     }
     private function makeQuery()
     {
-        return Category::query()->whereNot('id',$this->category->id)->with('translations')->take(20);
+
+        return Category::query()
+            ->whereNotIn('id', $this->searchNotCategoryIds)
+            ->with('translations')
+            ->take(20);
     }
     public function updatedSearchCategory($value)
     {
@@ -65,7 +78,9 @@ class Form extends Component
     {
         $data = $this->validate();
 
-        $this->category->parent_id = $data['parent'] ? $data['parent']['id'] : null;
+        $parent = $data['parent'] ? $data['parent']['id'] : null;
+
+        $this->category->parent_id = $parent;
 
         $this->category->save();
 
@@ -82,6 +97,8 @@ class Form extends Component
                 'disk' => 'local',
             ]);
         }
+
+        cache()->forget('categories');
 
         alert()->setData([
             'message' => 'данні успішно збережені',

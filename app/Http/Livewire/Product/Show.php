@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Product;
 
+use App\Actions\AlsoGet;
 use App\Models\OptionValue;
 use App\Models\Sku;
 use App\Models\SkuReview;
@@ -14,29 +15,77 @@ class Show extends Component
     public ?Sku $sku;
     public Collection $skus;
     public Collection $reviews;
+    public SkuReview $review;
+    public $openModalReview = false;
     public $quantityOptions;
     public $options;
     public $selectValues = [];
     public $continuation;
-    protected $listeners  = ['save-new-review' => 'saveReview'];
+    public $also = [];
+    public function rules()
+    {
+        return [
+            'review.rating' => ['required'],
+            'review.sku_id' => ['required'],
+            'review.user_id' => ['required'],
+            'review.comment' => ['required'],
+        ];
+    }
     public function mount(Sku $sku)
     {
-        $this->sku = $sku->load(['product.propertiesValues.property.translations','product.propertiesValues.translations','values.translations']);
-        $this->skus = $sku->product->skus()->with('values.translations', 'variations','values.option.translations')->get();
+        $this->also = AlsoGet::handle($sku->id);
+
+        if (auth()->check()) {
+            $this->review = SkuReview::make([
+                'rating' => 5,
+                'sku_id' => $this->sku->id,
+                'user_id' => auth()->user()->id,
+            ]);
+        }
+
+        $this->sku = $sku->load(
+            'reviews.user',
+            'product.propertiesValues.translations',
+            'product.propertiesValues.property.parent.translations',
+            'product.propertiesValues.property.translations',
+            'product.skus.values.translations',
+            'product.skus.values.option.translations',
+        );
+
+        $this->skus = $sku->product->skus;
+
         $this->reviews = $this->sku->reviews;
+
         $this->options = $this->mapSkuToOptionsValues($this->skus);
+
+
         $this->quantityOptions = count($this->sku->values);
+
         $this->setOptionsSku();
-        $this->filter(null);
-        $this->properties = $sku->product->propertiesValues->mapToGroups(function($item) {
+
+        $this->filter(null, false);
+
+        $this->properties = $sku->product->propertiesValues->mapToGroups(function ($item) {
+
             return [$item->property->parent->title => $item];
         })->toArray();
 
-        // dd($this->properties);  
+        session()->put("also." . $sku->product->id, $sku->id);
     }
     public function saveReview(SkuReview $skuReview)
     {
         $this->reviews->push($skuReview);
+    }
+    public function openModalReview()
+    {
+        if (!auth()->check()) {
+            return redirect()->route('login');
+        }
+        $this->openModalReview = true;
+    }
+    public function hidenModalReview()
+    {
+        $this->openModalReview = false;
     }
     public function addBasket()
     {
@@ -61,10 +110,17 @@ class Show extends Component
     public function selected(OptionValue $optionValue)
     {
         $this->selectValues[$optionValue->option->id] = $optionValue->id;
-        $this->filter($optionValue);
+        $this->filter($optionValue, true);
     }
+    public function createReview()
+    {
+        $this->validate();
 
-    public function filter(OptionValue|null $optionValue)
+        $this->review->save();
+        $this->hidenModalReview();
+        $this->reviews = $this->sku->reviews()->with('user')->get();
+    }
+    public function filter(OptionValue|null $optionValue, $isRedirect)
     {
         $continuation = collect();
         $skus = [];
@@ -96,9 +152,15 @@ class Show extends Component
             $sku = end($skus);
             $this->sku = $sku;
             $this->setOptionsSku();
-            return $this->filter(null);
+            return $this->filter(null, true);
         };
+
         $this->sku = $sku;
+        
+        if ($isRedirect) {
+            return redirect()->route('product.show', $this->sku);
+        }
+
         $this->continuation = $this->mapSkuToOptionsValues($continuation, 'id');
     }
 

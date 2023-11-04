@@ -1,4 +1,4 @@
-<div x-data="{ accordionShow: false }" class="collapse mt-3 collapse-arrow bg-base-200">
+<div x-data="{ accordionShow: {{ isset($open) ? "$open" : 'false' }} }" class="collapse mt-3 collapse-arrow bg-base-200">
     <div @click="accordionShow = !accordionShow"
         class="w-full cursor-pointer flex px-4 items-center justify-between">
         <div>

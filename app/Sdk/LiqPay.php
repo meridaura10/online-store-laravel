@@ -1,20 +1,11 @@
 <?php
 
-namespace App\Services\SDK;
+namespace App\SDK;
 
-use App\Contracts\Payments\PaymentCheckoutInterface;
-use App\Contracts\Payments\PaymentStatusInterface;
-use App\Enums\OrderStatusEnum;
-use App\Enums\Payment\PaymentStatusEnum;
-use App\Enums\ProjectPaymentEnum;
-use App\Models\Order;
+
 use App\Models\Payment;
-use App\Models\Project;
-use App\Models\ProjectDonate;
 use Exception;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
 
 class LiqPay
 {

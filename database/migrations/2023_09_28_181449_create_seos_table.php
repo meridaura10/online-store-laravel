@@ -14,7 +14,8 @@ return new class extends Migration
     {
         Schema::create('seos', function (Blueprint $table) {
             $table->id();
-            $table->string('url');
+            $table->string('url')->nullable();
+            $table->nullableMorphs('relation');
             $table->timestamps();
         });
 

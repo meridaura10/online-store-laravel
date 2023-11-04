@@ -26,6 +26,12 @@ abstract class Table extends Component
     public $sortKey = null;
     public $sortDirection = false;
     public array $f = [];
+
+    protected $queryString = [
+        'f' => ['except' => []],
+        'perPage' => ['except' => 15],
+    ];
+
     abstract public function columns(): Columns;
     public function actions(): Actions
     {
@@ -39,6 +45,9 @@ abstract class Table extends Component
     abstract public function title(): string|null;
     abstract public function extendQuery(Builder $builder);
     abstract public function createdLink();
+    public function editedLink(){
+        return null;
+    }
 
     public function mount()
     {

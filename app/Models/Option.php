@@ -19,7 +19,9 @@ class Option extends Model
 
     public function scopeSearch($query, $value)
     {
-        return $query->whereTranslationLike('title', "%$value%");
+        return $query->whereTranslationLike('title', "%$value%")->orWhereHas('values', function ($q) use ($value) {
+            $q->whereTranslationLike('value', "%$value%");
+        });
     }
     public function scopeSearchToValue($query, $value)
     {

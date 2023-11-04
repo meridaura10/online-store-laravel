@@ -15,6 +15,16 @@ class Property extends Model
 
     protected $fillable = ['parent_id'];
 
+    public function scopeSearch($query, $value)
+    {
+        $query->whereTranslationLike('title', "%$value%")
+            ->orWhereHas('values', function ($q) use ($value) {
+                return $q->search($value);
+            })->orWhereHas('parent', function ($q) use ($value) {
+                return $q->whereTranslationLike('title', "%$value%");
+            });
+    }
+
     public function parent()
     {
         return $this->belongsTo(Property::class, 'parent_id');

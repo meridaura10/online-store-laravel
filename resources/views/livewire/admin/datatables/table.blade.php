@@ -1,17 +1,25 @@
-
 <div class="overflow-x-auto p-6">
     @livewire('util.confirm')
     <div class="card card-compact shadow-lg bg-base-100 mb-4">
         <div class="card-body">
             <div>
                 <div class="p-1">
-                    <div class="flex justify-between items-center">                   
+                    <div class="flex justify-between items-center">
                         <div>
-                            <a href="{{ $this->createdLink() }}" class="ml-auto">
-                                <button class="btn btn-accent btn-sm">
-                                    <i class="ri-add-line"></i>
-                                </button>
-                            </a>
+                            @if ($this->createdLink())
+                                <a href="{{ $this->createdLink() }}" class="ml-auto">
+                                    <button class="btn btn-accent btn-sm">
+                                        <i class="ri-add-line"></i>
+                                    </button>
+                                </a>
+                            @endif
+                            @if ($this->editedLink())
+                                <a href="{{ $this->editedLink() }}" class="ml-auto">
+                                    <button class="btn btn-accent btn-sm">
+                                        <i class="ri-pencil-fill"></i>
+                                    </button>
+                                </a>
+                            @endif
                         </div>
                         <div>
                             <h1 class="font-bold text-xl">
@@ -25,7 +33,8 @@
                             </button>
                         </div>
                     </div>
-                    <div class="grid grid-cols-2 gap-4 items-center justify-center md:grid-cols-2 xl:grid-cols-4 lg:grid-cols-3">
+                    <div
+                        class="grid grid-cols-2 gap-4 items-center justify-center md:grid-cols-2 xl:grid-cols-4 lg:grid-cols-3">
                         @foreach ($filters as $filter)
                             {!! $filter->render($this) !!}
                         @endforeach

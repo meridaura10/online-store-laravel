@@ -15,8 +15,15 @@ class PropertyValue extends Model
 
     protected $fillable = ['property_id'];
 
+    public function scopeSearch($query,$value){
+        $query->whereTranslationLike('value', "%$value%");
+    }
+
     public function property()
     {
         return $this->belongsTo(Property::class);
+    }
+    public function products(){
+        return $this->belongsToMany(Product::class, 'product_properties');
     }
 }

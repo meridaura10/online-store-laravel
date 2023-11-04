@@ -1,7 +1,9 @@
 @if ($column->valueIsArray($item))
     @forelse ($column->value($item) as $value)
-    {{ $value->name }}
-    <br>
+    {{ $value->{$column->valueName} }};
+    @if ($column->columnValues)
+        <br>    
+    @endif
     @empty
     -
     @endforelse

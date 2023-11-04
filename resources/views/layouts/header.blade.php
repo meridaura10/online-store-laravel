@@ -1,7 +1,7 @@
 <header class="h-16 header-bg text-white fixed top-0 z-20  w-full">
     <div class="my-container h-[100%] flex items-center justify-between">
         <div class="flex">
-            <a href="{{ route('home') }}" class="text-xl font-bold">Назва сайту</a>
+            <a href="{{ route('home') }}" class="text-xl font-bold">Shoper</a>
             @livewire('header.catalog')
         </div>
         @livewire('header.search')

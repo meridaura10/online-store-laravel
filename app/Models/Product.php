@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+use App\Http\Livewire\Filters\Util\Filters;
+use App\Models\Category;
+use App\Services\Filters\ProductsFilters;
+use Illuminate\Database\Query\Builder;
 use Astrotomic\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,9 +18,11 @@ class Product extends Model
     public $translatedAttributes = ['name'];
 
     protected $fillable = ['brand_id', 'status'];
+
+
     public function categories()
     {
-        return $this->belongsToMany(Category::class, 'category_product');
+        return $this->belongsToMany(Category::class);
     }
     public function brand()
     {
@@ -48,8 +54,7 @@ class Product extends Model
             $q->where('categories.id', $categoryId);
         });
     }
-
-
+    
     public function scopeSortByCategory($query, $key, $direction)
     {
         return $query->join('category_product', 'products.id', '=', 'category_product.product_id')

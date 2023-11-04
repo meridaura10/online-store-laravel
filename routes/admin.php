@@ -8,15 +8,23 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\PropertyController;
 use App\Http\Controllers\Admin\SeoController;
+use App\Http\Controllers\Admin\SkuController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'admin.index')->name('index');
+Route::view('/users', 'admin.user.index')->name('users.index');
 
 Route::prefix('products')->name('products.')->controller(ProductController::class)->group(function () {
     Route::get('/', 'index')->name('index');
     Route::get('/create', 'create')->name('create');
     Route::get('/{product}/show','show')->name('show');
     Route::get('/{product}/edit', 'edit')->name('edit');
+
+    Route::prefix('{product}/skus')->name('skus.')->controller(SkuController::class)->group(function () {
+        Route::get('/','index')->name('index');
+        Route::get('/seo','seo')->name('seo');
+        Route::get('/form','form')->name('form');
+    });
 });
 
 Route::prefix('seo')->name('seos.')->controller(SeoController::class)->group(function () {
@@ -29,6 +37,7 @@ Route::prefix('categories')->name('categories.')->controller(CategoryController:
     Route::get('/', 'index')->name('index');
     Route::get('/create', 'create')->name('create');
     Route::get('/{category}/edit', 'edit')->name('edit');
+    Route::get('{category}/seo/','seo')->name('seo');
 });
 
 Route::prefix('orders')->name('orders.')->controller(OrderController::class)->group(function () {
@@ -40,6 +49,7 @@ Route::prefix('brands')->name('brands.')->controller(BrandController::class)->gr
     Route::get('/', 'index')->name('index');
     Route::get('/create', 'create')->name('create');
     Route::get('/{brand}/edit', 'edit')->name('edit');
+    Route::get('{brarnd}/seo/','seo')->name('seo');
 });
 
 Route::prefix('options')->name('options.')->controller(OptionController::class)->group(function () {

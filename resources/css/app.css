@@ -2,7 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-
+body{
+  background: white;
+}
 
 @layer utilities {
   .my-container {
@@ -88,4 +90,7 @@
 .hidden-alert {
   top: -64px;
   opacity: .0 ;
+}
+.underline-search-text-sku:hover p{
+  text-decoration: underline;
 }

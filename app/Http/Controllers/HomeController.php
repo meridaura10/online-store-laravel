@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\AlsoGet;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
@@ -12,20 +13,22 @@ use Illuminate\Support\Facades\Storage;
 
 class HomeController extends Controller
 {
-    public function index()
+ public function index()
     {
+        $also = AlsoGet::handle(null);
 
-        $products = Product::query()
-            ->with('sku', 'skus.values', 'sku.bannerImage')
-            ->whereHas('skus', function ($q) {
-                $q->where('skus.quantity', '>', 0);
-            })
-            ->where('status', 1)
-            ->limit(30)
-            ->get();
-
+        $skus = Sku::query()
+        ->whereHas('product',function($q){
+            $q->where('status',1);
+        })
+        ->where('status',1)
+        ->where('quantity','>',0)
+        ->with('values.translations', 'bannerImage','product.translations','reviews')
+        ->paginate(15);    
+    
         return view('home.index', [
-            'products' => $products,
+            'skus' => $skus,
+            'also' => $also,
         ]);
     }
 }

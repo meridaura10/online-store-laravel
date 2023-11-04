@@ -10,7 +10,11 @@ class Seo extends Model
 {
     use HasFactory;
     use Translatable;
-    public $translatedAttributes = ['title','description'];
-    protected $fillable = ['url'];
+    public $translatedAttributes = ['title', 'description'];
+    protected $fillable = ['url', 'relation_type', 'relation_id'];
 
+    public function relation()
+    {
+        return $this->morphTo();
+    }
 }

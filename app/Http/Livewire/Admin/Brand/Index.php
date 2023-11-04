@@ -10,6 +10,7 @@ use App\Http\Livewire\Admin\Datatable\Util\Columns;
 use App\Http\Livewire\Admin\Datatable\Util\Filter;
 use App\Http\Livewire\Admin\Datatable\Util\Filters;
 use App\Models\Brand;
+use App\Models\Category;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 
 class Index extends Table
@@ -38,8 +39,17 @@ class Index extends Table
                 title: 'id',
             ),
             new Column(
+                key: 'image',
+                title: 'image',
+                view: 'default:image',
+            ),
+            new Column(
                 key: 'name',
                 title: 'name',
+            ),
+            new Column(
+                key: 'slug',
+                title: 'slug',
             ),
             new Column(
                 key: 'created_at',
@@ -54,6 +64,11 @@ class Index extends Table
             new Action(
                 key: 'edit',
                 icon: 'ri-pencil-line',
+            ),
+            new Action(
+                key: 'seo',
+                icon: 'ri-article-line',
+                style: 'btn-accent'
             ),
             new Action(
                 key: 'destroy',
@@ -74,6 +89,10 @@ class Index extends Table
                 view: "default:text",
             ),
         );
+    }
+    public function actionSeo(Brand $brand)
+    {
+        redirect()->route($brand->getSeoData()['route'],$brand);
     }
     public function actionEdit(Brand $brand)
     {

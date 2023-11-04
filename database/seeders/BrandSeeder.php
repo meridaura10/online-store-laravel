@@ -21,18 +21,19 @@ class BrandSeeder extends Seeder
             'Logitech', 'Razer', 'SteelSeries', 'Canon', 'Nikon',
             'Bose', 'JBL', 'Sennheiser', 'Garmin', 'Casio',
             'Microsoft', 'Amazon', 'Epson', 'Nvidia', 'GoPro',
-            'Philips', 'TCL', 'ZTE', 'Alcatel', 'T-Mobile',
-            'Fujitsu', 'Meizu', 'BlackBerry', 'Acer', 'Dell',
-            'HP', 'Toshiba', 'Panasonic', 'Sharp', 'Mitsubishi',
-            'Subaru', 'Toyota', 'Honda', 'BMW', 'Mercedes-Benz',
-            'Audi', 'Volkswagen', 'Ford', 'IKEA', 'Herman Miller',
-            'LEGO', 'Hasbro', 'Play-Doh', 'Mattel', 'Fisher-Price',
-            'Sony Pictures', 'Universal Pictures', 'Warner Bros.', 'Paramount Pictures', '20th Century Studios',
+            // 'Philips', 'TCL', 'ZTE', 'Alcatel', 'T-Mobile',
+            // 'Fujitsu', 'Meizu', 'BlackBerry', 'Acer', 'Dell',
+            // 'HP', 'Toshiba', 'Panasonic', 'Sharp', 'Mitsubishi',
+            // 'Subaru', 'Toyota', 'Honda', 'BMW', 'Mercedes-Benz',
+            // 'Audi', 'Volkswagen', 'Ford', 'IKEA', 'Herman Miller',
+            // 'LEGO', 'Hasbro', 'Play-Doh', 'Mattel', 'Fisher-Price',
+            // 'Sony Pictures', 'Universal Pictures', 'Warner Bros.', 'Paramount Pictures', '20th Century Studios',
         ];
         $images = Storage::files('fakeImages/brands');
         foreach ($brands as $brand) {
              $brand = Brand::create([
                 'name' => $brand,
+                'slug' => str()->slug($brand),
             ]);
             $brand->image()->create([
                 'order' => 1,

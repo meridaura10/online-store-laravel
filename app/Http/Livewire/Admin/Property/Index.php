@@ -49,7 +49,7 @@ class Index extends Table
             new Column(
                 key: 'values',
                 title: 'values',
-                view: 'admin.property.columns.values'
+                valueName: 'value',
             ),
             new Column(
                 key: 'created_at',
@@ -80,10 +80,6 @@ class Index extends Table
             new Filter(
                 key: 'search',
                 title: 'пошук',
-            ),
-            new Filter(
-                key: 'searchToValue',
-                title: 'пошук за значенням',
             ),
         );
     }

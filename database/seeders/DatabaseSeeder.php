@@ -30,45 +30,65 @@ class DatabaseSeeder extends Seeder
 
 
         User::factory(15)->create();
+
         $optionValues = OptionValue::all();
 
 
 
 
-        Product::factory(20)->create()->each(function ($product) use ($optionValues) {
-            $categories = Category::query()->limit(fake()->numberBetween(1, 3))->whereDoesntHave('subCategories')->get();
+        Product::factory(100)->create()->each(function ($product) use ($optionValues) {
 
-            $product->categories()->sync($categories);
+            $categories = Category::query()->inRandomOrder()->where('parent_id', '!=', null)->doesntHave('subcategories')->limit(50)->get();
+
+            $product->categories()->attach($categories);
 
             foreach ($categories as $category) {
                 $properties = $category->properties()->with('values')->get()->toArray();
 
                 $propertyValueIds = array_map(function ($item) {
-                    return $item['values'][0]['id'];
+                    return $item['values'][fake()->numberBetween(0, count($item['values']) - 1)]['id'];
                 }, $properties);
 
-                $product->propertiesValues()->sync($propertyValueIds);
+
+                $product->propertiesValues()->attach($propertyValueIds);
             }
+            $variationValuesColor = $optionValues->where('option_id', '1')->pluck('id');
+            $variationValuesMemory = $optionValues->where('option_id', '2')->pluck('id');
+            $variationValuesSize = $optionValues->where('option_id', '3')->pluck('id');
+            $variationValuesStyle = $optionValues->where('option_id', '4')->pluck('id');
 
             for ($i = 0; $i < fake()->numberBetween(2, 4); $i++) {
+
+                $colorId = $variationValuesColor->random();
+                $memory = $variationValuesMemory->random();
+                $size = $variationValuesSize->random();
+                $style = $variationValuesStyle->random();
+
+
                 $sku = $product->skus()->create([
                     'status' => 1,
                     'price' => fake()->randomFloat(2, 10, 1000),
                     'quantity' => fake()->randomNumber(),
                 ]);
 
-                $variationValuesColor = $optionValues->where('option_id', '1')->pluck('id');
-                $variationValuesMemory = $optionValues->where('option_id', '2')->pluck('id');
-                $variationValuesSize = $optionValues->where('option_id', '3')->pluck('id');
-                $variationValuesStyle = $optionValues->where('option_id', '4')->pluck('id');
 
-                $colorId = $variationValuesColor->random();
-                $memory = $variationValuesMemory->random();
-                $style = $variationValuesStyle->random();
-                $size = $variationValuesSize->random();
+
                 $images = Storage::files('fakeImages/skus');
 
-                $sku->values()->attach([$colorId, $memory, $size]);
+                $sku->values()->attach(
+                    [
+                        $colorId,
+                        $memory,
+                        $size
+                    ]
+                );
+
+                $sku->update([
+                    'slug' => str()->slug($sku->name),
+                ]);
+
+                $sku->save();
+                gc_collect_cycles();
                 for ($j = 0; $j < fake()->numberBetween(1, 3); $j++) {
                     $sku->images()->create([
                         'path' => $images[fake()->numberBetween(0, count($images) - 1)],
@@ -80,7 +100,7 @@ class DatabaseSeeder extends Seeder
                     ]);
                 }
             }
+            gc_collect_cycles();
         });
-        // CategoryProduct::factory(10)->create();
     }
 }

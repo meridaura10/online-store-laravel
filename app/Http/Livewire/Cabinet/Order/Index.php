@@ -11,6 +11,7 @@ use Livewire\Component;
 class Index extends Component
 {
     public ?string $sortScope = null;
+    public bool $hasOrders = false;
     public bool $sortDirection = true;
     public ?string $sortKey = null;
     public $filters = [];
@@ -28,10 +29,13 @@ class Index extends Component
         }
         return redirect($payment->payment_page_url);
     }
+    public function mount(){
+        $this->hasOrders = auth()->check() ? !!auth()->user()->orders()->count() : false;
+    }
 
     public function makeQuery(): Builder
     {
-        return auth()->user()->orders()->getQuery();
+        return auth()->user()->orders();
     }
 
     public function setSortParams(?string $scope, string $sortKey)
@@ -73,15 +77,8 @@ class Index extends Component
     }
     public function hasFilter()
     {
-
         return count($this->filters) > 0 ? count(array_filter(array_values($this->filters), function ($i) {
-            $isArray = is_array($i);
-            if ($isArray) {
-                $index = array_search('all', $i);
-                return $index === false;
-            } else {
                 return !empty($i);
-            }
         })) : false;
     }
     public function clearFilter(){

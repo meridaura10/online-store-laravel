@@ -3,6 +3,7 @@
 use App\Http\Livewire\Util\Alert;
 use App\Services\AlertService;
 use App\Services\BasketService;
+use App\Services\Filters\ProductsFilters;
 use App\Services\SeoService;
 
 if (! function_exists('basket')) {
@@ -27,4 +28,5 @@ if (! function_exists('seo')) {
     
     }
 }
+
 

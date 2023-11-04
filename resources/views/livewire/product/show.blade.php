@@ -19,49 +19,44 @@
     <div x-show="activeTab === 'all'">
         <div class="flex  justify-between">
 
-            <div id="default-carousel" class="relative w-full max-w-[800px] h-64" data-carousel="slide">
-
-                <div class="relative h-full overflow-hidden rounded-lg">
-                    @foreach ($sku->images as $image)
-                        <div class="hidden duration-700 ease-in-out  bg-white w-full" data-carousel-item>
-                            <img src="{{ $image->url }}"
-                                class="absolute h-full w-full object-contain block  -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
-                                alt="...">
+            <div x-data="{ showImage: 0, max: {{ count($sku->images) - 1 }} }" class="w-full">
+                <div class="relative ">
+                    @foreach ($sku->images as $key => $image)
+                        <div x-show="showImage === {{ $key }}" class="w-full flex justify-center"
+                            wire:key='{{ $key }}.image'>
+                            <img class="min-h-[400px] max-h-[600px] object-contain" src="{{ $image->url }}"
+                                alt="">
+                        </div>
+                    @endforeach
+                    @if(count($sku->images) > 1)
+                    <button class="absolute top-0 bottom-0 right-5 rounded-full ">
+                        <div @click='showImage === max ? showImage = 0 : showImage++'
+                            class="bg-gray-200 hover:bg-gray-300 rounded-full h-[45px] w-[45px] items-center flex justify-center flex-col transition-colors">
+                            <i class="ri-arrow-right-s-line text-4xl"></i>
+                        </div>
+                    </button>
+                    <button class="absolute top-0 bottom-0 left-5 rounded-full ">
+                        <div @click='showImage === 0 ? showImage = max : showImage--'
+                            class="bg-gray-200 hover:bg-gray-300 rounded-full h-[45px] w-[45px] items-center flex justify-center flex-col transition-colors">
+                            <i class="ri-arrow-left-s-line text-4xl"></i>
+                        </div>
+                    </button>
+                    @endIf
+                </div>
+                @if(count($sku->images) > 1)
+                <div class="w-full flex gap-1">
+                    @foreach ($sku->images as $key => $image)
+                        <div @click='showImage = {{ $key }}'
+                            x-bind:class="showImage === {{ $key }} ? 'border border-orange-400' : 'border border-transparent'"
+                            class="p-1.5 cursor-pointer" wire:key='{{ $key }}.image'>
+                            <img class="min-h-[70px] max-h-[70px] max-w-[70px] object-contain" src="{{ $image->url }}"
+                                alt="">
                         </div>
                     @endforeach
                 </div>
-                <!-- Slider indicators -->
-
-                <!-- Slider controls -->
-                @if (count($sku->images) > 1)
-                    <button type="button"
-                        class="absolute top-0 left-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
-                        data-carousel-prev>
-                        <span
-                            class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
-                            <svg class="w-4 h-4 text-white dark:text-gray-800" aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                    stroke-width="2" d="M5 1 1 5l4 4" />
-                            </svg>
-                            <span class="sr-only">Previous</span>
-                        </span>
-                    </button>
-                    <button type="button"
-                        class="absolute top-0 right-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
-                        data-carousel-next>
-                        <span
-                            class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
-                            <svg class="w-4 h-4 text-white dark:text-gray-800" aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                    stroke-width="2" d="m1 9 4-4-4-4" />
-                            </svg>
-                            <span class="sr-only">Next</span>
-                        </span>
-                    </button>
-                @endif
+                @endIf
             </div>
+
             <div class="w-full">
                 <h3 class="text-2xl font-bold">
                     {{ $sku->name }}
@@ -71,7 +66,7 @@
                     @foreach ($options as $optionTitle => $optionValues)
                         <div>
                             <div>
-                                <h3 class="text-xl font-bold">{{ $optionTitle }}</h3>
+                                <h3 class="text-xl mb-1 font-bold">{{ $optionTitle }}</h3>
                                 <ul class="flex gap-3">
                                     @foreach ($optionValues as $optionValue)
                                         <li>
@@ -112,7 +107,7 @@
                                 купити
                             </button>
                         </div>
-                        <div>
+                        {{-- <div>
                             <button class="bg-sky-600 btn hover:bg-sky-500 transition-all text-white">
                                 купити в
                                 кредит</button>
@@ -123,7 +118,7 @@
                                     d="M16.5 3C19.5376 3 22 5.5 22 9C22 16 14.5 20 12 21.5C9.5 20 2 16 2 9C2 5.5 4.5 3 7.5 3C9.35997 3 11 4 12 5C13 4 14.64 3 16.5 3ZM12.9339 18.6038C13.8155 18.0485 14.61 17.4955 15.3549 16.9029C18.3337 14.533 20 11.9435 20 9C20 6.64076 18.463 5 16.5 5C15.4241 5 14.2593 5.56911 13.4142 6.41421L12 7.82843L10.5858 6.41421C9.74068 5.56911 8.5759 5 7.5 5C5.55906 5 4 6.6565 4 9C4 11.9435 5.66627 14.533 8.64514 16.9029C9.39 17.4955 10.1845 18.0485 11.0661 18.6038C11.3646 18.7919 11.6611 18.9729 12 19.1752C12.3389 18.9729 12.6354 18.7919 12.9339 18.6038Z">
                                 </path>
                             </svg>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>
@@ -139,8 +134,8 @@
                 </li>
             @endforeach
         </div>
-        <div class="mt-3">
-            <ul>
+        <div class="my-3">
+            <ul class="pb-5">
                 @foreach ($properties as $key => $propertiesValues)
                     <li class="mb-4">
                         <h2 class="text-xl mb-2 font-bold">{{ $key }}</h2>
@@ -164,27 +159,78 @@
                 <div class="font-semibold text-lg">
                     Залиште свій відгук про цей товар
                 </div>
-                <div wire:click='$emit("open-modal-form-sku-review")'>
+                <div wire:click='openModalReview'>
                     <button class="btn">написати відгук</button>
                 </div>
             </div>
-            @livewire('util.form-sku-review', ['sku' => $sku])
-            <h2 class="text-xl font-bold my-4">reviews</h2>
-            <ul>
-                @foreach ($reviews as $review)
-                    <li class="border px-3 py-4">
+
+            <dialog id="modal" class="modal" @if ($openModalReview) open @endif>
+                <div class="w-screen h-screen relative  bg-base-content opacity-40">
+                </div>
+                <form wire:submit.prevent='createReview' method="dialog"
+                    class="modal-box absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-100">
+                    <div class="border-b pb-3 mb-3 flex justify-between">
                         <div>
-                            <span class="font-semibold text-lg">автор</span>: {{ $review->user->name }}
+                            <h2 class="text-xl font-bold">Написати відгук</h2>
+                        </div>
+                        <div wire:click='hidenModalReview' class="cursor-pointer">
+                            <i class="ri-close-line text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="rating w-full">
+                        @for ($i = 0; $i < 5; $i++)
+                            <input wire:model.defer='review.rating' value="{{ $i + 1 }}" type="radio"
+                                name="rating-2" class="mask mask-star-2 bg-orange-400" />
+                        @endfor
+                    </div>
+                    <div class="w-full mt-3">
+                        @include('ui.form.textarea', [
+                            'model' => 'review.comment',
+                            'placeholder' => 'ваш коментар',
+                        ])
+                    </div>
+                    <div class="mt-3">
+                        <button class="btn" type="submit">
+                            зберегти
+                        </button>
+                    </div>
+                </form>
+            </dialog>
+            <ul class="grid gap-2 mb-8">
+                @foreach ($sku->reviews as $review)
+                    <li class="p-3 border rounded-lg">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="font-bold">{{ $review->user->name }}</span>
+                            <span class="text-sm text-gray-500">
+                                {{ $review->created_at }}
+                            </span>
+                        </div>
+                        <div class="mb-2">
+                            <div class="flex items-center">
+                                <span class="font-semibold">оцінка: </span><span> {{ $review->rating }}</span>
+                            </div>
                         </div>
                         <div>
-                            <span class="font-semibold text-lg">коментарій</span>: {{ $review->comment }}
-                        </div>
-                        <div>
-                            <span class="font-semibold text-lg">оцінка</span>: {{ $review->rating }}
+                            {{ $review->comment }}
                         </div>
                     </li>
                 @endforeach
             </ul>
+
         </div>
+    </div>
+    <div class="mt-5">
+        <div class="border-t">
+            <h4 class="font-bold text-2xl my-2">переглянуті вами товари</h4>
+        </div>
+        <ul class="pb-5">
+            @foreach ($also as $sku)
+                <li wire:key="aslo.{{ $sku->id }}.item">
+                  @include('ui.components.sku-card',[
+                    'styles' => 'max-w-[240px]'
+                  ])
+                </li>
+            @endforeach
+        </ul>
     </div>
 </div>

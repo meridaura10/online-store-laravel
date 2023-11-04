@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire\Admin\Datatable\Util;
 
-use App\Http\Livewire\Admin\Datatable\Util\AbstractCollection;
+use App\Http\Livewire\Util\AbstractCollection;
 
 class Actions extends AbstractCollection {
     public function __construct(Action ... $actions){

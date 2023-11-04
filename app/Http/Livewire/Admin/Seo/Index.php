@@ -23,7 +23,7 @@ class Index extends Table
     }
     public function extendQuery(Builder $builder)
     {
-        return $builder;
+         $builder->with('translations','relation');
     }
     public function columns(): Columns
     {
@@ -35,6 +35,12 @@ class Index extends Table
             new Column(
                 key: 'url',
                 title: 'url',
+                view: 'admin.seo.columns.url'
+            ),
+            new Column(
+                key: 'relation',
+                title: 'relation',
+                view: 'admin.seo.columns.relation'
             ),
             new Column(
                 key: 'title',
@@ -69,6 +75,12 @@ class Index extends Table
     }
     public function actionEdit(Seo $seo)
     {
+        $relation = $seo->relation;
+        if($relation){
+            $data = $seo->relation->getSeoData();
+            return redirect()->route($data['route'],$relation);
+        }
+      
         return redirect()->route('admin.seos.edit',compact('seo'));
     }
     public function actionDestroy(Seo $seo)

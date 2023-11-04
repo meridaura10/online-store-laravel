@@ -30,7 +30,7 @@ class Index extends Table
     public function extendQuery(Builder $builder)
     {
 
-        return $builder->with('subcategories','translations','parent');
+        return $builder->with('subcategories', 'translations', 'parent');
     }
     public function columns(): Columns
     {
@@ -45,7 +45,6 @@ class Index extends Table
                 sortScope: 'orderByTranslation',
             ),
             new Column(
-                sortable: false,
                 key: 'parent.name',
                 title: 'parent category',
             ),
@@ -69,13 +68,18 @@ class Index extends Table
                 icon: 'ri-pencil-line',
             ),
             new Action(
+                key: 'seo',
+                icon: 'ri-article-line',
+                style: 'btn-accent'
+            ),
+            new Action(
                 key: 'destroy',
                 icon: 'ri-delete-bin-line',
                 confirm: true,
                 style: 'btn-red',
                 confirm_title: 'delete category?',
                 confirm_description: 'confirm delete category',
-            )   
+            )
         );
     }
     public function filters(): Filters
@@ -109,6 +113,11 @@ class Index extends Table
     {
         $category->delete();
     }
+    public function actionSeo(Category $category)
+    {     
+        redirect()->route($category->getSeoData()['route'],$category);
+    }
+
     public function switchStatus(Category $category)
     {
         $category->update(['status' => !$category->status]);

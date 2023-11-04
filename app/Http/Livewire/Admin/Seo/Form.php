@@ -25,9 +25,20 @@ class Form extends Component
        
     public function createOrUpdate(){
         $data = $this->validate();
+
         $this->seo->save();
 
         $this->seo->update($data['translations']);
+
+        cache()->forget($this->seo->url);
+
+        alert()->setData([
+            'message' => 'данні успішно збережені',
+            'type' => 'success',
+            'dellay' => 3000,
+        ]);
+
+        alert()->open($this);
 
         redirect()->route('admin.seos.index');
     }

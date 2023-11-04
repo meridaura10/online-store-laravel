@@ -98,7 +98,7 @@
             @foreach (basket()->getItems() as $basketItem)
                 <li class="flex p-3 gap-2 items-center border-b">
                     <div class="h-[70px] w-[70px]">
-                        <img class="h-full object-cover" src="{{ asset($basketItem->sku->bannerImage->path) }}"
+                        <img class="h-full object-cover" src="{{ $basketItem->sku->bannerImage->url }}"
                             alt="">
                     </div>
                     <div class="flex justify-between items-center  w-full">
@@ -129,7 +129,7 @@
             </div>
         </div>
         <ul x-data="{ show: false }">
-            <li x-on:click="show = false" class="flex p-2 items-center">
+            <li x-on:click="show = false" wire:click='selectCashPayment' class="flex p-2 items-center">
                 @include('ui.form.radio', [
                     'model' => 'paymentType',
                     'label' => 'Оплата під час отримання товару',

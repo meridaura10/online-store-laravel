@@ -15,13 +15,14 @@ class CategorySeeder extends Seeder
     $imagesRoot = Storage::files('fakeImages/categories/root');
     $imagesChild = Storage::files('fakeImages/categories/child');
     $faker = Faker::create('en');
-    for ($iroot = 0; $iroot < 12; $iroot++) {
+    for ($iroot = 0; $iroot < 6; $iroot++) {
 
-
+      $name = $faker->realText(30);
       $category = Category::create([
         'en' => [
-          'name' => $faker->realText(30),
+          'name' => $name,
         ],
+        'slug' => str()->slug($name),
         'parent_id' => null,
       ]);
 
@@ -32,11 +33,12 @@ class CategorySeeder extends Seeder
       ]);
 
       for ($isub = 0; $isub < 12; $isub++) {
-
+        $name = $faker->realText(30);
         $sub = $category->subCategories()->create([
           'en' => [
-            'name' => $faker->realText(30),
+            'name' => $name,
           ],
+          'slug' => str()->slug($name),
         ]);
         $sub->image()->create([
           'order' => 0,
@@ -45,15 +47,16 @@ class CategorySeeder extends Seeder
         ]);
 
 
-        if ($iroot <= 4) {
+        if ($iroot <= 2) {
           if ($isub <= 5) {
 
             for ($i = 0; $i < $faker->numberBetween(3, 8); $i++) {
-
+              $name = $faker->realText(30);
               $subNew =  $sub->subCategories()->create([
                 'en' => [
-                  'name' => $faker->realText(30),
+                  'name' => $name,
                 ],
+                'slug' => str()->slug($name),
               ]);
 
               $subNew->image()->create([
@@ -65,13 +68,14 @@ class CategorySeeder extends Seeder
           }
         }
 
-        if ($iroot >= 8) {
+        if ($iroot >= 4) {
           for ($i = 0; $i < $faker->numberBetween(4, 8); $i++) {
-
+            $name = $faker->realText(30);
             $subNew =  $sub->subCategories()->create([
               'en' => [
-                'name' => $faker->realText(30),
+                'name' => $name,
               ],
+              'slug' => str()->slug($name),
             ]);
 
             $subNew->image()->create([

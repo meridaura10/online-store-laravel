@@ -2,5 +2,5 @@
 
 @section('content')
 @livewire('admin.order.index')
-@livewire('admin.modal.change-status-modal')
+@livewire('admin.datatable.modal.change-field-modal')
 @endsection

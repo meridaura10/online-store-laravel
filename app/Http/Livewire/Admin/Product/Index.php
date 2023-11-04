@@ -32,6 +32,8 @@ class Index extends Table
                 key: 'categories',
                 title: 'categories',
                 sortScope: 'sortByCategory',
+                columnValues: true,
+                valueName: 'name',
             ),
             new Column(
                 key: 'brand.name',
@@ -64,15 +66,6 @@ class Index extends Table
                 view: "default:status"
             ),
             new Filter(
-                key: 'category',
-                title: 'Category',
-                values: 'categories',
-                scope: 'filterByCategory',
-                valuesKey: 'id',
-                valuesName: 'name',
-                view: 'default:select'
-            ),
-            new Filter(
                 key: 'brand',
                 title: 'brand',
                 values: 'brands',
@@ -81,10 +74,6 @@ class Index extends Table
                 view: 'default:select'
             )
         );
-    }
-    public function categories(){
-        return Category::all();
-
     }
     public function status(){
       return  [
@@ -122,7 +111,7 @@ class Index extends Table
                 confirm_description: 'confirm delete product',
             ),
             new Action(
-                key: 'show',
+                key: 'skus',
                 icon: 'ri-article-line',
             ),
         );
@@ -131,8 +120,8 @@ class Index extends Table
     {
         return $builder->with('translations','brand','categories.translations');
     }
-    public function actionShow(Product $product){
-        return redirect()->route('admin.products.show',compact('product'));
+    public function actionSkus(Product $product){
+        return redirect()->route('admin.products.skus.index',compact('product'));
     }
     public function actionEdit(Product $product)
     {

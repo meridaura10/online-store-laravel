@@ -37,9 +37,9 @@ class Index extends Table
             new Column(
                 key: 'status',
                 title: 'status',
-                view: 'default:statusEdit',
+                view: 'default:fieldEdit',
                 columnParams: [
-                    'statuses' => OrderStatusEnum::class,
+                    'options' => OrderStatusEnum::cases(),
                     'model' => $this->model(),
                 ],
             ),
@@ -54,7 +54,8 @@ class Index extends Table
                 view: 'admin.order.columns.paymentColumn',
                 columnParams: [
                     'model' => Payment::class,
-                    'statuses' => PaymentStatusEnum::class,
+                    'options' => PaymentStatusEnum::cases(),
+                    'field' => 'status',
                 ],
             ),
             new Column(
@@ -117,20 +118,20 @@ class Index extends Table
     {
         return $builder->with('customer', 'payments', 'address.warehouse.city.area');
     }
-    public function actions(): Actions
-    {
-        return new Actions(
-            new Action(
-                key: 'show',
-                icon: 'ri-eye-line',
-                style: 'btn-primary'
-            )
-        );
-    }
-    public function actionShow(Order $order)
-    {
-        return redirect()->route('orders.show', $order->id);
-    }
+    // public function actions(): Actions
+    // {
+    //     return new Actions(
+    //         new Action(
+    //             key: 'show',
+    //             icon: 'ri-eye-line',
+    //             style: 'btn-primary'
+    //         )
+    //     );
+    // }
+    // public function actionShow(Order $order)
+    // {
+    //     return redirect()->route('orders.show', $order->id);
+    // }
     public function paymentSystemValues()
     {
         $values = [];

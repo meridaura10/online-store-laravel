@@ -9,7 +9,19 @@ class Brand extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name'];
+    protected $fillable = ['name','slug'];
+
+    public function getSeoData()
+    {
+        return [
+            'title' => $this->name,
+            'description' => null,
+            'image' => $this->image->url,
+            'route' => "admin.brands.seo",
+            'url' => '/brands/*',
+        ];
+    }
+
     public function image()
     {
         return $this->morphOne(Image::class, 'relation');
@@ -22,8 +34,12 @@ class Brand extends Model
     {
         return $query->where('name', 'like', '%' . $value . '%');
     }
+    public function seo()
+    {
+        return $this->morphOne(Seo::class, 'relation');
+    }
     public function products()
     {
-        return $this->hasOne(Product::class);
+        return $this->hasMany(Product::class);
     }
 }

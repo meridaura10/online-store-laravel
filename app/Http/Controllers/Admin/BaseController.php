@@ -16,9 +16,9 @@ abstract class BaseController extends Controller
         $path = 'admin.' . $this->name() . '.index';
         return view($path);
     }
-    public function edit($brandId)
+    public function edit($modelId)
     {
-        $item = $this->model()->find($brandId);
+        $item = $this->model()->find($modelId);
         $path = 'admin.' . $this->name() . '.edit';
         return view($path, [
             $this->name() => $item,
@@ -28,5 +28,12 @@ abstract class BaseController extends Controller
     {
         $path = 'admin.' . $this->name() . '.create';
         return view($path);
+    }
+    public function seo($modelId)
+    {
+        $item = $this->model()->find($modelId);
+        return view('admin.seo.dynamic.form', [
+            'model' => $item,
+        ]);
     }
 }

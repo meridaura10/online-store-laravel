@@ -25,4 +25,8 @@ class OptionValue extends Model
     {
         return $this->belongsToMany(Sku::class, 'sku_variations');
     }
+    public function scopeSearch($query, $value)
+    {
+        return $query->whereTranslationLike('value', "%$value%");
+    }
 }

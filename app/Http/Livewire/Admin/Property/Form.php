@@ -9,25 +9,28 @@ class Form extends Component
 {
     public Property $property;
     public $parentProperties;
-    public $subProperties;
     public $translations = [];
     public $propertiesValues = [];
-    public $translationsSubProperties = [];
-    public $translationsPropertyValues = [];
+    public $translationValues = [];
 
     public function rules()
     {
         $rules = [
             'property.parent_id' => ['nullable'],
             'property.id' => ['nullable'],
-            'translationsSubProperties' => ['required'],
-            'translationsPropertyValues' => ['required'],
         ];
         foreach (localization()->getSupportedLocalesKeys() as $lang) {
             $defaultRule = $lang == localization()->getDefaultLocale()  ? 'required' : 'nullable';
             $rules["translations.$lang.title"] = [$defaultRule, 'string', 'max:190'];
-            $rules["translationsSubProperties.*.$lang.title"] = [$defaultRule, 'string', 'max:190'];
-            $rules["translationsPropertyValues.*.*.$lang.value"] = [$defaultRule, 'string', 'max:190'];
+
+            if ($this->property->parent_id && $this->property->parent_id !== 'null') {
+                $rules["propertiesValues"] = ['required'];
+
+                foreach ($this->propertiesValues as $key => $value) {
+                    $rules["propertiesValues.$key.id"] = ['nullable'];
+                    $rules["translationValues.$key.$lang.value"] = [$defaultRule, 'string', 'max:190'];
+                }
+            }
         }
         return $rules;
     }
@@ -35,84 +38,74 @@ class Form extends Component
     public function mount(Property $property)
     {
         $this->property = $property;
+        if (!$property->id) {
+            $this->property->parent_id = null;
+        }
+        foreach ($property->values as $key => $value) {
+            $this->propertiesValues[$key] = [
+                'id' => $value->id
+            ];
+            $this->translationValues[$key] = $value->getTranslationsArray();
+        }
         $this->parentProperties = Property::query()->whereNull('parent_id')->where('id', '!=', $property->id)->with('translations')->get()->toArray();
         $this->translations = $property->getTranslationsArray();
-
-        $subProperties = $property->subproperties()->with('translations', 'values.translations')->get();
-        if ($subProperties->empty()) {
-            $this->propertiesValues = $property->values->toArray();
-        } else {
-            foreach ($subProperties as $keyProperty => $property) {
-
-                $this->translationsSubProperties[$keyProperty] = $property->getTranslationsArray();
-
-                foreach ($property->values as $key => $value) {
-                    $this->propertiesValues[$keyProperty][$key] = $value;
-                    $this->translationsPropertyValues[$keyProperty][$key] = $value->getTranslationsArray();
-                }
-            }
-        }
-
-
-
-        $this->subProperties = $subProperties->toArray();
     }
-    public function addSubProperty()
+    public function addValue()
     {
-        array_push($this->subProperties, ['id' => null,]);
-        array_push($this->propertiesValues, ['id' => null]);
-        array_push($this->translationsSubProperties, []);
+        array_push($this->propertiesValues, [
+            'id' => null,
+        ]);
     }
-    public function removeSubProperty($key)
+    public function removeValue($key)
     {
-        unset($this->subProperties[$key]);
-        unset($this->translationsSubProperties[$key]);
-    }
-    public function addValueProperty()
-    {
-        array_push($this->propertiesValues, []);
-    }
-    public function removeSubPropertyValue($key, $keyValue)
-    {
-        unset($this->propertiesValues[$key][$keyValue]);
-        unset($this->translationsPropertyValues[$key][$keyValue]);
+        unset($this->propertiesValues[$key]);
+        unset($this->translationValues[$key]);
     }
     public function save()
     {
         $data = $this->validate();
 
-        $propertyData = $data['property'];
+        if ($data['property']['id']) {
+            $property = Property::query()->find($data['property']['id']);
 
-        $property = Property::query()->find($propertyData['id']);
+            $property->update([
+                ...$data['translations'],
+                'parent_id' => $data['property']['parent_id'] === 'null' ? null : $data['property']['parent_id'],
+            ]);
+        } else {
+            $property = Property::create([
+                ...$data['translations'],
+                ...$data['property'],
+            ]);
+        }
+        if ($property->parent_id) {
+            $valuesToNotDelete = array_map(function ($value, $key) use ($property, $data) {
+                if ($value['id']) {
 
-        $property->update([
-            'parent_id' => $propertyData['parent_id'] === 'null' ? null : $propertyData['parent_id'],
+                    $value = $property->values()->find($value['id']);
+                } else {
+
+                    $value = $property->values()->create([]);
+                }
+
+                $value->update($data['translationValues'][$key]);
+
+                return $value->id;
+            }, $data['propertiesValues'], array_keys($data['propertiesValues']));
+
+            $property->values()->whereNotIn('id', $valuesToNotDelete)->delete();
+        }
+
+        alert()->setData([
+            'message' => 'данні успішно збережені',
+            'type' => 'success',
+            'dellay' => 3000,
         ]);
 
-        // if ($property->parent_id) {
-        //     $property->subproperties()->delete();
+        alert()->open($this);
 
-        // }
-
-        // if ($) {
-        //     dd('app');
-        // }else{
-
-
-        //     dd($property);
-        // }
-
-
-        dd($data);
+        return redirect()->route('admin.properties.index');
     }
-    public function addValueToSubProperty($key)
-    {
-        array_push($this->subProperties[$key]['values'], [
-            'id' => null,
-        ]);
-        array_push($this->translationsPropertyValues[$key], []);
-    }
-
     public function render()
     {
         return view('livewire.admin.property.form');

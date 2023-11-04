@@ -18,7 +18,6 @@ class ProductController extends Controller
     public function show(Sku $sku)
     {
         seo()->generateSeoDynamic($sku);
-        
         return view('product.show', compact('sku'));
     }
 }

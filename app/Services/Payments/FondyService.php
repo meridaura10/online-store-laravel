@@ -35,7 +35,7 @@ class FondyService implements PaymentSystemInterface
 
             $url = Checkout::url($data)->getUrl();
 
-            PaymentService::updatePaymentPageUrl($payment,$url);
+            PaymentService::updatePaymentPageUrl($payment, $url);
 
             return $url;
         } catch (\Throwable $th) {
@@ -70,6 +70,30 @@ class FondyService implements PaymentSystemInterface
 
             default:
                 return PaymentStatusEnum::Waiting;
+        }
+    }
+    public function response(Request $request,Payment $payment)
+    {
+        $result = new \Cloudipsp\Result\Result($request->all(), 'test');
+
+        $order =  $payment->payable;
+        if ($result->isApproved()) {
+            $payment->update([
+                'status' => PaymentStatusEnum::Successful->value,
+            ]);
+
+            $order->update([
+                'status' => OrderStatusEnum::Approved->value,
+            ]);
+        }
+        if ($result->isDeclined() || $result->isExpired()) {
+            $payment->update([
+                'status' => PaymentStatusEnum::Declined->value,
+            ]);
+
+            $order->update([
+                'status' => OrderStatusEnum::Declined->value,
+            ]);
         }
     }
 }

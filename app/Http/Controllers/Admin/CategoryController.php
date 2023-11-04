@@ -4,20 +4,17 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
-class CategoryController extends Controller
+class CategoryController extends BaseController
 {
-    public function index()
+    public function model(): Builder
     {
-        return view('admin.category.index');
+        return Category::query();
     }
-    public function edit(Category $category)
+    public function name(): string
     {
-        return view('admin.category.edit',compact('category'));
-    }
-    public function create()
-    {
-        return view('admin.category.create');
+        return 'category';
     }
 }

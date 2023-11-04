@@ -1,33 +1,57 @@
 @extends('layouts.app')
 @section('content')
-<div class="flex flex-col lg:flex-row my-container">
-    @include('home.categoryList')
-    <main class="w-full pt-4 lg:border-l pl-0 lg:pl-8">
-        {{-- <div x-data="{ slide: 1, slides: 3 }" class="relative">
-            <div class="flex w-full">
-              <div x-show="slide === 1" class="w-full">
-                <img src="https://content2.rozetka.com.ua/banner_main/image_ua/original/355736523.jpg" alt="Slide 1" class="w-full">
-              </div>
-              <div x-show="slide === 2" class="w-full">
-                <img src="https://content.rozetka.com.ua/banner_main/image_ua/original/355841922.jpg" alt="Slide 2" class="w-full">
-              </div>
-              <div x-show="slide === 3" class="w-full">
-                <img src="https://content2.rozetka.com.ua/banner_main/image_ua/original/353732461.jpg" alt="Slide 3" class="w-full">
-              </div>
+    <div class="flex flex-col lg:flex-row my-container">
+        <div class="border-r w-[300px]">
+            @include('home.category-list')
+        </div>
+        <div>
+            @if (!basket()->isEmpty())
+                <div class="my-5 p-4 border rounded-lg mx-6">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <i class="ri-shopping-cart-2-line text-green-600 text-3xl"></i>
+                            <p>У кошику <strong>{{ basket()->quantity() }}</strong> товари на суму
+                                <strong>{{ basket()->sum() }}₴</strong>
+                            </p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <a href="{{ route('basket.index') }}" class="text-blue-600 font-bold">перейти до кошика</a>
+                            <a href="{{ route('orders.checkout') }}">
+                                @include('ui.form.button', [
+                                    'styles' => 'bg-green-600 hover:bg-green-500 text-white',
+                                    'name' => 'оформити замовлення ',
+                                ])
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            @endif
+            @if (count($also))
+                <h2 class="text-2xl mx-3 mb-4 font-bold">
+                    Останні переглянуті товари
+                </h2>
+
+                <div class="grid grid-cols-2 border-b px-2 pb-1  md:grid-cols-3 xl:grid-cols-5">
+                    @foreach ($also as $sku)
+                        @include('ui.components.sku-card', [])
+                    @endforeach
+                </div>
+            @endif
+            <div class="border-b py-6 border-r">
+                <h2 class="text-2xl px-3 font-bold">
+                    більше товарів для вибору
+                </h2>
             </div>
-          
-            <div class="absolute bottom-0 left-0 right-0 flex justify-center mt-4">
-              <template x-for="index in slides">
-                <button
-                  x-bind:class="{ 'bg-indigo-500': slide === index, 'bg-gray-300': slide !== index }"
-                  class="h-2 w-2 rounded-full mx-1 focus:outline-none"
-                  x-on:click="slide = index"
-                ></button>
-              </template>
+            <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
+                @foreach ($skus as $sku)
+                    @include('ui.components.sku-card', [
+                        'styles' => 'border-r border-b',
+                    ])
+                @endforeach
             </div>
-          </div> --}}
-        
-        @include('home.productList')
-    </main>
-</div>
+            <div class="px-2 py-8">
+                {{ $skus->links() }}
+            </div>
+        </div>
+    </div>
 @endsection

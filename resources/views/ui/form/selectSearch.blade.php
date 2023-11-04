@@ -9,6 +9,14 @@
         <input type="text" class="input input-xs input-bordered" wire:model="{{ $searchModel }}"
             placeholder="{{ trans('base.search') }}">
         <ul class="max-h-64 w-full overflow-y-auto">
+            @if (isset($default))
+                <li @click="open = false"
+                wire:click="$set('{{ $model }}',null)"
+                    x-on:click="$wire.{{ $searchModel }} = ''"
+                    wire:key="default.item.searh + {{ now() }}">
+                    <a>{{ $default }}</a>
+                </li>
+            @endif
             @foreach ($options as $option)
                 <li @click="open = false"
                     wire:click="$set('{{ $model }}', @if (isset($optionKey)) '{{ $option->$optionKey }}'

@@ -5,14 +5,17 @@
 
                 @include('ui.form.translations', ['fields' => [['name' => 'name', 'type' => 'input']]])
 
+
                 @include('ui.form.selectSearch', [
                     'valueName' => 'name',
                     'label' => 'parent category',
                     'model' => 'parent',
-                    'value' => $parent['name'] ?? 'виберіть батьківську категорію( не обов`язково )',
+                    'default' => 'this category is parent',
+                    'value' => $parent['name'] ?? 'виберіть батьківську категорію ( не обов`язково ) або категорія буде батьківська ',
                     'options' => $categories,
                     'searchModel' => 'searchCategory',
                 ])
+
                 <div class="my-6">
                     <div class="h-24 flex justify-between items-end">
                         @if ($image)

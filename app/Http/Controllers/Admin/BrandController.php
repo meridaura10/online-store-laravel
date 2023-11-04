@@ -10,10 +10,12 @@ use Illuminate\Http\Request;
 
 class BrandController extends BaseController
 {
-    public function model(): Builder {
+    public function model(): Builder
+    {
         return Brand::query();
     }
-    public function name(): string{
+    public function name(): string
+    {
         return 'brand';
     }
 }

@@ -16,6 +16,8 @@ class Column
         public bool|null $sortable = true,
         public string|null $sortScope = 'orderBy',
         public array|null $columnParams = null,
+        public string|null $valueName = null,
+        public bool|null $columnValues = false,
     ) {
         $this->title = $title ?? $key;
 

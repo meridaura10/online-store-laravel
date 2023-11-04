@@ -10,7 +10,7 @@
         </div>
         <div class="flex gap-1">
             status:  
-            <span class="font-semibold">  @include('livewire.admin.datatables.defaults.columns.statusEdit',[
+            <span class="font-semibold">  @include('livewire.admin.datatables.defaults.columns.fieldEdit',[
                 'item' => $item->payments[0],
                 'column' => $column,
             ])</span>

@@ -18,7 +18,7 @@
                 @include("ui.form.".$field['type'], [
                     'id' => isset($id) ? $id.$lang : 'input',
                     'label' => trans("base.form.".$field['name']),
-                    'model' => isset($model) ? $model.$lang.'.'.$field['name'] : "translations.$lang.".$field['name']
+                    'model' => "translations.$lang.".$field['name']
                 ])
             @endforeach
         </div>

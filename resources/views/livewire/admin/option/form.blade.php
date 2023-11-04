@@ -1,9 +1,9 @@
 <div x-data='{ activeTab: {{ localization()->getDefaultLocale() }}}' class="p-4">
     <form wire:submit.prevent='save'>
-        @component('ui.components.card')
+        @component('ui.layouts.card')
             @include('ui.form.translations', ['fields' => [['name' => 'title', 'type' => 'input']]])
         @endcomponent
-        @component('ui.components.card')
+        @component('ui.layouts.card')
             <div class="flex justify-between items-center">
                 <div class="text-xl font-bold">
                     values
@@ -28,7 +28,7 @@
         <ul class="grid grid-cols-3 gap-4">
             @foreach ($values as $key => $value)
                 <li class="" wire:key="{{ $key }}">
-                    @component('ui.components.card')
+                    @component('ui.layouts.card')
                         <div class="pl-2 font-semibold text-lg">
                             value №<span>{{ $key + 1 }}</span>
                         </div>
@@ -54,7 +54,7 @@
             @endforeach
 
         </ul>
-        @component('ui.components.card')
+        @component('ui.layouts.card')
             <div class="flex justify-between items-center">
                 <div class="mt-4">
                     <button type="submit" class="btn">submit</button>

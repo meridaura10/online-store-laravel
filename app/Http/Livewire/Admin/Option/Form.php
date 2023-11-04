@@ -66,6 +66,8 @@ class Form extends Component
         ]);
 
         alert()->open($this);
+
+        return redirect()->route('admin.options.index');
     }
     public function mount(Option $option)
     {

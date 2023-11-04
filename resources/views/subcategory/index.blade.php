@@ -2,11 +2,11 @@
 @section('content')
     <div class="my-container pt-5">
         <div class="flex gap-3 justify-between mb-4 items-center">
-            {{-- @foreach ($parenCategory->brands as $brand)
-                <a href="/" class="opacity-60 hover:opacity-100 transition-all">
+            @foreach ($parenCategory->brands as $brand)
+                <a href="{{ route('brands.show',$brand) }}" class="opacity-60 hover:opacity-100 transition-all">
                     <img class="object-contain w-[100px]" src="{{ $brand->image->url }}" alt="">
                 </a>
-            @endforeach --}}
+            @endforeach
         </div>
         {{-- {{ $type }} --}}
         <div class="mb-10">
@@ -15,7 +15,7 @@
                     @foreach ($categories as $key => $category)
                         <li class=" mb-2">
                             <div class="flex items-center">
-                                <a class="p-4 hover:text-[#f84147] border-r @if (($type === 'sixCartSub' ? $key > 5 : $type === 'fullHasCategories') ? true : false) text-left whitespace-nowrap @else text-center @endif  text-[#3e77aa] hover:underline"
+                                <a class="p-4 hover:text-[#f84147] border-r @if (count($category->subcategories)) text-left whitespace-nowrap @else text-center @endif  text-[#3e77aa] hover:underline"
                                     href="{{ route('categories.show', $category) }}">
                                     <img class="w-[340px] h-[200px] object-contain mb-4" src="{{ $category->image->url }}"
                                         alt="">

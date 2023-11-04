@@ -2,23 +2,20 @@
 
 namespace App\Services\Payments;
 
-use App\Enums\Order\OrderStatusEnum;
-use App\Enums\OrderStatusEnums;
-use App\Enums\Payment\PaymentTypeEnum;
 use App\Enums\Payment\PaymentStatusEnum;
 use App\Enums\Payment\PaymentSystemEnum;
-use App\Enums\PaymentTypeEnums;
+use App\Enums\Payment\PaymentTypeEnum;
 use App\Models\Order;
-
-use App\Models\OrderPayment;
 use App\Models\Payment;
+use App\Services\Payments\FondyService;
+use App\Services\Payments\LiqPayService;
 
 class PaymentService
 {
     public function createCheckoutUrl(Payment $payment, $route): string|false
     {
         $service = $this->getServiceToSystemPayment($payment->system);
-
+        
         if (!$service) {
             return false;
         }
@@ -32,11 +29,12 @@ class PaymentService
                 "amount" => $order->amount,
                 'status' => PaymentStatusEnum::Waiting->value,
                 "type" => $type,
-                'payment_expired_time' => now()->addHour(),
+                'payment_expired_time' => $system === PaymentTypeEnum::Cash->value ? null : now()->addHour(),
                 'payment_page_url' => null,
                 "system" => $system,
             ]);
         } catch (\Throwable $th) {
+            dd($th);
             return false;
         }
     }

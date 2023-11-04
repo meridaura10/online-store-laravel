@@ -17,26 +17,24 @@ class OrderController extends Controller
     {
         return view('order.checkout');
     }
-    public function show(Order $order)
+    public function response(Request $request,Payment $payment, OrderService $service)
     {
-        dd('show', $order);
-    }
-    public function response(Request $request, OrderService $service)
-    {
-        $order = $service->acceptCheckout($request);
-        if ($order) {
-            return redirect()->route('orders.show', compact('order'));
+        $payment = $service->acceptCheckout($request,$payment);
+        if ($payment) {
+            return redirect()->route('cabinet.orders');
         }
         alert()->setData([
             'type' => 'error',
             'message' => 'сталась помилка при повернені на сайт після оплати',
             'dellay' => 4000,
         ]);
+
+        return redirect()->route('home.index');
     }
-    public function callback(Request $request,OrderService $service)
+    public function callback(Request $request,Payment $payment,OrderService $service)
     {
-        $order = $service->acceptCheckout($request);
-        if ($order) {
+        $payment = $service->acceptCheckout($request,$payment);
+        if ($payment) {
             return response(200);
         }
     }

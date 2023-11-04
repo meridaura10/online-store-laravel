@@ -27,16 +27,6 @@
                         orders
                     </li>
                 </a>
-                <a href="{{ route('admin.options.index') }}">
-                    <li class="hover:bg-gray-700 transition-all rounded-lg py-1 px-2">
-                        options
-                    </li>
-                </a>
-                <a href="{{ route('admin.properties.index') }}">
-                    <li class="hover:bg-gray-700 transition-all rounded-lg py-1 px-2">
-                        properties
-                    </li>
-                </a>
             </ul>
         </li>
         <li x-data="{ open: false }">
@@ -46,6 +36,21 @@
             </div>
 
             <ul x-show="open" class="mt-1 flex flex-col gap-1">
+                <a href="{{ route('admin.properties.index') }}">
+                    <li class="hover:bg-gray-700 transition-all rounded-lg py-1 px-2">
+                        properties
+                    </li>
+                </a>
+                <a href="{{ route('admin.options.index') }}">
+                    <li class="hover:bg-gray-700 transition-all rounded-lg py-1 px-2">
+                        options
+                    </li>
+                </a>
+                <a href="{{ route('admin.users.index') }}">
+                    <li class="hover:bg-gray-700 transition-all rounded-lg py-1 px-2">
+                        users
+                    </li>
+                </a>
                 <a href="{{ route('admin.seos.index') }}">
                     <li class="hover:bg-gray-700 transition-all rounded-lg py-1 px-2">
                         seo

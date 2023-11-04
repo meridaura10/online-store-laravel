@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 
 class Filter
 {
-    protected Table $table;
+    protected $table;
     public function __construct(
         public string $key,
         public string|null $scope = null,
@@ -60,7 +60,7 @@ class Filter
         }
         return [];
     }
-    public function render(Table &$table)
+    public function render($table)
     {
         $this->table = $table;
         return view($this->view, [
@@ -70,6 +70,7 @@ class Filter
 
     public function __serialize(): array
     {
+
         unset($this->table);
 
         return get_object_vars($this);

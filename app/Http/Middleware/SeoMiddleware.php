@@ -12,10 +12,7 @@ class SeoMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
-        // $url = $_SERVER['REQUEST_URI'];
-        // dd($next,$request,$url);
         seo()->generateSeo($request->path());
-        
         return $next($request);
     }
 }
