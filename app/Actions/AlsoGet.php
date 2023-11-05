@@ -6,13 +6,12 @@ use App\Models\Sku;
 
 class AlsoGet
 {
-    static public function handle($skuId = null)
+    static public function handle($productId = null)
     {
         if ($alsoIds = session()->get('also')) {
-
-            if ($skuId) {
-                $alsoIds = array_filter($alsoIds, function ($i) use ($skuId) {
-                    return $i !== $skuId;
+            if ($productId) {
+                $alsoIds = array_filter(array_keys($alsoIds), function ($i) use ($productId) {
+                    return $i !== $productId;
                 });
             }
 

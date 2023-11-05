@@ -7,9 +7,6 @@ use Livewire\Component;
 
 class Catalog extends Component
 {
-    public function mount(){
-
-    }
     public function render()
     {
         return view('livewire.header.catalog');

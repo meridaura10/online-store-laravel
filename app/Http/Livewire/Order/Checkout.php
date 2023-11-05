@@ -119,6 +119,7 @@ class Checkout extends Component
     public function submit()
     {
         $data = $this->validate();
+
         $orderService = new OrderService;
 
         $url = $orderService->make($data);

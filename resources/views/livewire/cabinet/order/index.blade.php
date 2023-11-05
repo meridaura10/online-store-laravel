@@ -3,19 +3,19 @@
         <div class="text-center pt-5">
             <img class="mx-auto" _ngcontent-rz-client-c1691351868="" alt="" loading="lazy" width="300px"
                 src="https://xl-static.rozetka.com.ua/assets/img/design/cabinet/cabinet-orders-dummy.svg">
-            <h2 class="font-bold text-xl">Список замовлень пустий</h2>
-            <p class="text-gray-500 mb-4">Ви ще нічого не замовляли</p>
+            <h2 class="font-bold text-xl">{{ trans('base.the_list_orders_empty') }}</h2>
+            <p class="text-gray-500 mb-4">{{ trans('base.you_haven`t_ordered_anything_yet') }}</p>
             <a class="py-3 px-4  bg-green-600 rounded-lg hover:bg-green-500 text-white transition-colors"
                 href="{{ route('home') }}">
-                перейти на головну
+                {{ trans('base.go_main_page') }}
             </a>
         </div>
     @else
         <div class="my-4 px-6 shadow-lg pb-3">
-            <h1 class="text-2xl  text-black font-bold">Мої замовлення</h1>
+            <h1 class="text-2xl  text-black font-bold">{{ trans('base.my_orders') }}</h1>
             <div class="font-bold my-3 flex flex-wrap gap-4 items-center">
                 <button class="btn" wire:click="setSortParams(null,'created_at')">
-                    сортувати за датой: @if ($sortKey === 'created_at')
+                    {{ trans('base.sort_date') }}: @if ($sortKey === 'created_at')
                         @if ($sortDirection)
                             <i class="ri-arrow-up-line"></i>
                         @else
@@ -26,7 +26,7 @@
                     @endif
                 </button>
                 <button class="btn" wire:click="setSortParams(null,'amount')">
-                    сортувати за ціною: @if ($sortKey === 'amount')
+                   {{ trans('base.sort_price') }}: @if ($sortKey === 'amount')
                         @if ($sortDirection)
                             <i class="ri-arrow-up-line"></i>
                         @else
@@ -37,7 +37,7 @@
                     @endif
                 </button>
                 <button @if (!$this->hasFilter()) disabled @endIf class="btn"
-                    wire:click="clearFilter">{{ trans('base.table.drop_filter') }}
+                    wire:click="clearFilter">{{ trans('base.drop_filters') }}
 
                 </button>
             </div>
@@ -48,7 +48,7 @@
                         class="@if (array_key_exists('status', $filters) && $status->value === $filters['status']) text-white bg-blue-500
                     @else
                     bg-blue-100 text-blue-500 @endif    py-3 px-4 inline-flex justify-center items-center gap-2   border border-transparent font-semibold  hover:text-white hover:bg-blue-500 focus:outline-none  transition-all rounded-2xl text-sm">
-                        {{ $status->value }}
+                        {{ trans('statuses.' . $status->value) }}
                     </button>
                 @endforeach
             </div>
@@ -63,7 +63,7 @@
         <div class="w-full mt-2">
             @if ($orders->isEmpty())
                 <div class="text-center">
-                    <p  class="text-gray-500 text-xl font-semibold pt-4">за вибраними фільтрами не знайдено ні одного замовлення </p>
+                    <p  class="text-gray-500 text-xl font-semibold pt-4">{{ trans('base.no_orders_were_found_for_the_selected_filters') }} </p>
                 </div>
             @else
                 <ul class="grid gap-4 ">
@@ -71,21 +71,21 @@
                         <li wire:key='{{ $order->id }}' class="bg-white shadow-lg rounded-lg p-6 relative">
                             <div class="flex justify-between">
                                 <div>
-                                    <h2 class="text-xl font-semibold mb-2">Замовлення #{{ $order->id }}</h2>
+                                    <h2 class="text-xl font-semibold mb-2">{{ trans('base.order') }} #{{ $order->id }}</h2>
                                 </div>
                                 <div>
-                                    <p class="text-gray-700">Дата створення: <span
+                                    <p class="text-gray-700">{{ trans('base.date_creation') }}: <span
                                             class="font-bold">{{ $order->created_at->format('d.m.Y H:i') }}</span></p>
                                 </div>
                             </div>
                             <div>
-                                <p class="text-gray-700">Статус: <span class="font-bold">{{ $order->status }}</span></p>
-                                <p class="text-gray-700">Статус оплати: <span
-                                        class="font-bold">{{ $order->payments[0]->status }}</span></p>
+                                <p class="text-gray-700">{{ trans('statuses.status') }}: <span class="font-bold"> {{ trans('statuses.' . $order->status) }}  </span></p>
+                                <p class="text-gray-700">{{ trans('statuses.status_payment') }}: <span
+                                        class="font-bold">{{ trans('statuses.' . $order->payments[0]->status) }}</span></p>
                             </div>
                             <div class="mt-4 ">
                                 <div>
-                                    <h5 class="font-bold text-lg mb-2">Products</h5>
+                                    <h5 class="font-bold text-lg mb-2">{{ trans('base.products') }}</h5>
                                 </div>
                                 <ul class="grid grid-cols-2 justify-between gap-3">
                                     @foreach ($order->products as $product)
@@ -94,8 +94,8 @@
                                                 class="w-16 h-16 object-cover rounded-md">
                                             <div>
                                                 <p class="font-semibold">{{ $product->name }}</p>
-                                                <p class="text-gray-700">{{ $product->price }} грн</p>
-                                                <p class="text-gray-700">{{ $product->quantity }} одн.</p>
+                                                <p class="text-gray-700">{{ $product->price }} {{ trans('base.uah') }}</p>
+                                                <p class="text-gray-700">{{ $product->quantity }} {{ trans('base.item') }}.</p>
                                             </div>
                                         </li>
                                     @endforeach
@@ -108,13 +108,13 @@
                                         $order->payments[0]->payment_expired_time > now())
                                     <div>
                                         <button wire:click='pay({{ $order->payments[0] }})' class="btn">
-                                            оплатити
+                                            {{ trans('base.pay') }}
                                         </button>
                                     </div>
                                 @endif
                                 <div>
-                                    <p class="text-lg font-semibold text-blue-500">Загальна сума: {{ $order->amount }}
-                                        грн
+                                    <p class="text-lg font-semibold text-blue-500">{{ trans('base.total_price') }}: {{ $order->amount }}
+                                        {{ trans('base.uah') }}
                                     </p>
                                 </div>
                             </div>

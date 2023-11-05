@@ -9,7 +9,7 @@
                     @if ($this->hasFilter())
                         <ul class="flex flex-wrap items-center">
                             <button type="button" wire:click="fullClaerF"
-                                class="py-1.5 px-3 mr-2 mb-2 text-sm font-medium text-gray-500 transition-all  bg-white rounded-full border border-red-300 hover:bg-red-300 hover:text-white">Скасувати</button>
+                                class="py-1.5 px-3 mr-2 mb-2 text-sm font-medium text-gray-500 transition-all  bg-white rounded-full border border-red-300 hover:bg-red-300 hover:text-white">{{ trans('base.Cancel ') }}</button>
                             @foreach ($f as $key => $values)
                                 @switch($filters->filter($key)->type())
                                     @case('range')
@@ -17,7 +17,7 @@
                                             <button type="button" wire:click='clearF("{{ $key }}")'
                                                 class="py-1.5 px-3 flex items-center mr-2 mb-2 text-sm font-medium text-gray-500 transition-all  bg-white rounded-full border border-gray-300 hover:bg-gray-100">
                                                 {{ $values['min'] ?? $filters->filter($key)->attributes['min'] }} -
-                                                {{ $values['max'] ?? $filters->filter($key)->attributes['max'] }} грн
+                                                {{ $values['max'] ?? $filters->filter($key)->attributes['max'] }} {{ trans('base.uah') }}
                                                 <span><i class="ri-close-line text-gray-400 text-lg"></i></span>
                                             </button>
                                         </li>
@@ -54,7 +54,7 @@
             <div class="w-[300px]">
                 <select wire:model='sort'
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500  focus:border-blue-500 block w-full p-2.5">
-                    <option disabled selected value="null">сортувати</option>
+                    <option disabled selected value="null">{{ trans('base.sorting') }}</option>
                     @foreach ($sorts as $sort)
                         {!! $sort->render($this) !!}
                     @endforeach

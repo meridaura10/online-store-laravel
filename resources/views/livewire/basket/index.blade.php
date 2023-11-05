@@ -6,25 +6,20 @@
                     <img class="w-[240px] h-[240px] mr-auto ml-auto" loading="lazy"
                         src="https://xl-static.rozetka.com.ua/assets/img/design/modal-cart-dummy.svg">
 
-                    <h4 wire:click='alert' class="">Кошик порожній</h4>
-                    <p class="">Але це ніколи не пізно виправити :)</p>
+                    <h4 wire:click='alert' class="">{{ trans('base.basket_empty') }}</h4>
+                    <p class="">{{ trans('base.but_never_too_late_fix') }} :)</p>
                 </div>
             </div>
         @else
-            @if (session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-            @endif
             <div class="">
                 <div class="flex justify-between items-center border-b pb-6">
-                    <h1 class="font-semibold text-2xl">Shopping Cart</h1>
+                    <h1 class="font-semibold text-2xl">{{ trans('base.shopping_cart') }}</h1>
                     <div>
                         <a class="inline-block w-full px-6 py-4 mt-4 text-lg font-medium leading-6 tracking-tighter text-center text-white bg-orange-500 lg:w-auto hover:bg-orange-600 focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 rounded-xl"
-                            href="{{ route('orders.checkout') }}">Оформити замовлення на суму: <span
+                            href="{{ route('orders.checkout') }}">{{ trans('base.place_order_amount') }}: <span
                                 class="text-sm">${{ basket()->sum() }}</span></a>
                     </div>
-                    <h2 class="font-semibold text-2xl">{{ basket()->quantity() }} Items</h2>
+                    <h2 class="font-semibold text-2xl">{{ basket()->quantity() }} {{ trans('base.items') }}</h2>
                 </div>
             </div>
             <div class="pt-6">
@@ -59,8 +54,8 @@
                             </div>
                             <div class="flex pt-3 justify-between w-full">
 
-                                <p class="text-gray-500 mt-2">Price: ${{ $item->sku->price }}</p>
-                                <p class="text-gray-500 mt-2">Total: ${{ $item->sum }}</p>
+                                <p class="text-gray-500 mt-2">{{ trans('base.price') }}: ${{ $item->sku->price }}</p>
+                                <p class="text-gray-500 mt-2">{{ trans('base.total') }}: ${{ $item->sum }}</p>
                                 <div class="flex items-center">
                                     <div class="pr-4"
                                         wire:click='update({{ $item }},{{ $item->quantity - 1 }})'>

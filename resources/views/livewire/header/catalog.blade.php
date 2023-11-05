@@ -1,6 +1,6 @@
 <div x-data="{ selectedCategory: {{ $categories->first()->id }}, open: false }">
     <button @click="open = true"
-        class="ml-4 px-6 py-2 rounded-lg bg-[#fff3] transition-all hover:bg-[#ffffff46] hover:text-white">Каталог</button>
+        class="ml-4 px-6 py-2 rounded-lg bg-[#fff3] transition-all hover:bg-[#ffffff46] hover:text-white">{{ trans('base.catalog') }}</button>
     <div x-show="open" x-bind:class="open ? 'overlay' : ''">
         <div class="main"></div>
     </div>

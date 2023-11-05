@@ -134,7 +134,9 @@ class Index extends Table
     // }
     public function paymentSystemValues()
     {
-        $values = [];
+        $values = [
+            'cash' => 'cash',
+        ];
 
         foreach (PaymentSystemEnum::cases() as $system) {
             $values[$system->value] = $system;

@@ -3,17 +3,17 @@
         <div @click="activeTab = 'all'"
             x-bind:class="activeTab === 'all' ? 'text-green-600 border-b-2 border-green-500' : ''"
             class="hover:text-green-600 cursor-pointer hover:border-green-500 pb-4 hover:border-b-2 transition-color">
-            Усе про товар
+            {{ trans('base.all_about_product') }}
         </div>
         <div @click="activeTab = 'properties'"
             x-bind:class="activeTab === 'properties' ? 'text-green-600 border-b-2 border-green-500 ' : ''"
             class="hover:text-green-600 cursor-pointer hover:border-green-500 pb-4 hover:border-b-2 transition-color">
-            Характеристики
+            {{ trans('base.properties') }}
         </div>
         <div @click="activeTab = 'review'"
             x-bind:class="activeTab === 'review' ? 'text-green-600 border-b-2 border-green-500' : ''"
             class="hover:text-green-600 cursor-pointer hover:border-green-500 pb-4  hover:border-b-2 transition-color">
-            Відгуки {{ count($sku->reviews) }}
+            {{ trans('base.reviews') }} {{ count($sku->reviews) }}
         </div>
     </div>
     <div x-show="activeTab === 'all'">
@@ -86,15 +86,19 @@
                         <span class="text-3xl font-bold">{{ $sku->price }}$</span>
                         <p>
                             @if ($sku->quantity > 0)
-                                <span class="text-green-600 font-semibold"> є в наявності</span>
+                                <span class="text-green-600 font-semibold">{{ trans('base.in_stock') }}</span>
                             @else
-                                <span class="text-red-400 font-semibold"> є в наявності</span>
+                                <span class="text-red-400 font-semibold">{{ trans('base.not_available') }}</span>
                             @endif
                         </p>
                     </div>
                     <div class="flex items-center gap-3">
                         <div>
-                            <button wire:click='addBasket'
+                            <button wire:click=' @if (basket()->hasItem($sku->id))
+                                redirectBasket
+                                @else 
+                                addBasket
+                            @endif'
                                 class="bg-green-600 btn flex items-center gap-2 hover:bg-green-500 transition-all text-white">
                                 <div>
                                     <svg xmlns="http://www.w3.org/2000/svg" class="fill-white" viewBox="0 0 24 24"
@@ -104,7 +108,11 @@
                                         </path>
                                     </svg>
                                 </div>
-                                купити
+                                @if (basket()->hasItem($sku->id))
+                                    {{ trans('base.product_already_cart') }}
+                                    @else 
+                                    {{ trans('base.by') }}
+                                @endif
                             </button>
                         </div>
                         {{-- <div>
@@ -125,7 +133,7 @@
         </div>
     </div>
     <div x-show="activeTab === 'properties'">
-        <h1 class="text-3xl font-bold">Характеристики {{ $sku->name }}</h1>
+        <h1 class="text-3xl font-bold">{{ trans('base.properties') }} {{ $sku->name }}</h1>
         <div class="mt-4 mb-2">
             @foreach ($sku->values as $value)
                 <li class="flex items-center"> <span
@@ -157,10 +165,10 @@
             <h1 class="text-2xl font-bold">{{ $sku->name }}</h1>
             <div class="my-4 px-3 py-4 border flex justify-between items-center">
                 <div class="font-semibold text-lg">
-                    Залиште свій відгук про цей товар
+                   {{ trans('base.leave_review_product') }}
                 </div>
                 <div wire:click='openModalReview'>
-                    <button class="btn">написати відгук</button>
+                    <button class="btn">{{ trans('base.write_review') }}</button>
                 </div>
             </div>
 
@@ -171,7 +179,7 @@
                     class="modal-box absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-100">
                     <div class="border-b pb-3 mb-3 flex justify-between">
                         <div>
-                            <h2 class="text-xl font-bold">Написати відгук</h2>
+                            <h2 class="text-xl font-bold">{{ trans('base.write_review') }}</h2>
                         </div>
                         <div wire:click='hidenModalReview' class="cursor-pointer">
                             <i class="ri-close-line text-xl"></i>
@@ -186,12 +194,12 @@
                     <div class="w-full mt-3">
                         @include('ui.form.textarea', [
                             'model' => 'review.comment',
-                            'placeholder' => 'ваш коментар',
+                            'placeholder' => trans('base.your_comment'),
                         ])
                     </div>
                     <div class="mt-3">
                         <button class="btn" type="submit">
-                            зберегти
+                            {{ trans('base.save') }}
                         </button>
                     </div>
                 </form>
@@ -207,7 +215,7 @@
                         </div>
                         <div class="mb-2">
                             <div class="flex items-center">
-                                <span class="font-semibold">оцінка: </span><span> {{ $review->rating }}</span>
+                                <span class="font-semibold">{{ trans('base.rating') }}: </span><span> {{ $review->rating }}</span>
                             </div>
                         </div>
                         <div>
@@ -219,11 +227,12 @@
 
         </div>
     </div>
+    @if (count($also))
     <div class="mt-5">
         <div class="border-t">
-            <h4 class="font-bold text-2xl my-2">переглянуті вами товари</h4>
+            <h4 class="font-bold text-2xl my-2">{{ trans('base.last_reviewed_products') }}</h4>
         </div>
-        <ul class="pb-5">
+        <ul class="pb-5 flex flex-wrap">
             @foreach ($also as $sku)
                 <li wire:key="aslo.{{ $sku->id }}.item">
                   @include('ui.components.sku-card',[
@@ -233,4 +242,5 @@
             @endforeach
         </ul>
     </div>
+    @endif
 </div>

@@ -23,13 +23,13 @@ class ProductFiltersToBrand implements ProductFiltersToModel
         return new Filters(
             new Range(
                 key: str()->slug('price'),
-                title: 'price',
+                title: trans('base.price'),
                 field: 'price',
                 attributes: $this->price(),
             ),
             new CategoryFilter(
                 key: str()->slug('categories'),
-                title: 'categories',
+                title: trans('base.categories'),
                 field: 'product.categories',
                 relatedField: 'category_id',
                 values: $this->categories(),

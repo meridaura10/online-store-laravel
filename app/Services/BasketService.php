@@ -83,6 +83,9 @@ class BasketService
     {
         return $this->getBasket()->basketItems;
     }
+    public function hasItem($id){
+        return $this->getItem($id) ? true : false;
+    }
     public function getItem($skuId)
     {
         return $this->getItems()->where('sku_id', $skuId)->first();

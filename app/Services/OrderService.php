@@ -72,7 +72,7 @@ class OrderService
                     'type' => 'sucsess',
                     'dellay' => 4000,
                 ]);
-                return route('orders.index');
+                return route('cabinet.orders');
             }
             return $paymentService->createCheckoutUrl($payment, 'orders');
         } catch (\Throwable $th) {

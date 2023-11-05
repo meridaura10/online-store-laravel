@@ -28,13 +28,13 @@ class ProductFiltersToCategory
         return new Filters(
             new Range(
                 key: str()->slug('price'),
-                title: 'price',
+                title: trans('base.price'),
                 field: 'price',
                 attributes: $this->price(),
             ),
             new CheckBox(
                 key: str()->slug('brands'),
-                title: 'brands',
+                title: trans('base.brands'),
                 field: 'product.brand',
                 relatedField: 'brand_id',
                 values: $this->brands(),

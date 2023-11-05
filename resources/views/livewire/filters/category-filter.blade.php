@@ -19,7 +19,7 @@
                         @foreach ($category['category'] as $key => $name)
                             <li
                                 class="hover:text-red-400 cursor-pointer pl-2 text-sm transition-colors mt-2  text-sky-700">
-                                <a href="{{ route('categories.show', $key) }}">{{ $name }}</a>
+                                <a href="{{ route('categories.show', str()->slug($name)) }}">{{ $name }}</a>
                             </li>
                         @endforeach
                     @endforeach

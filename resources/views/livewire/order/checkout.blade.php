@@ -1,7 +1,7 @@
 <div x-data="{ isOpen: false }" class="w-full max-w-[1232px] mx-auto">
     <div class="py-5">
         <h1 class="font-bold text-[32px] text-black">
-            Оформлення замовлення
+            {{ trans('base.placing_order') }}
         </h1>
     </div>
     <div x-show="isOpen"
@@ -10,7 +10,7 @@
         <div class="bg-white rounded-lg shadow-md w-full max-w-lg p-4">
             <!-- Modal header -->
             <div class="flex items-start justify-between border-b pb-2">
-                <h3 class="text-lg font-semibold text-gray-900">Виберіть своє місто</h3>
+                <h3 class="text-lg font-semibold text-gray-900">{{ trans('base.choose_your_city') }}</h3>
                 <button @click="isOpen = false" class="text-gray-500 hover:text-gray-700 focus:outline-none">
                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd"
@@ -23,7 +23,7 @@
             <div class="py-4">
                 @include('ui.form.selectSearch', [
                     'valueName' => 'name',
-                    'label' => 'Область',
+                    'label' => trans('base.area'),
                     'model' => 'area',
                     'value' => $area['name'] ?? null,
                     'options' => $areas,
@@ -32,7 +32,7 @@
                 @if (isset($area))
                     @include('ui.form.selectSearch', [
                         'valueName' => 'name',
-                        'label' => 'Місто',
+                        'label' => trans('base.city'),
                         'model' => 'city',
                         'value' => $city['name'] ?? null,
                         'options' => $cities,
@@ -42,7 +42,7 @@
                 @if (isset($city) && !empty($city))
                     @include('ui.form.selectSearch', [
                         'valueName' => 'address',
-                        'label' => 'Відділення',
+                        'label' => trans('base.warehouse'),
                         'model' => 'warehouse',
                         'value' => $warehouse['address'] ?? null,
                         'options' => $warehouses,
@@ -55,40 +55,39 @@
 
     <div class="pb-4">
         <div>
-            <h2 class="font-bold  text-xl">Отримувач замовлення</h2>
+            <h2 class="font-bold  text-xl">{{ trans('base.recipient_order') }}</h2>
         </div>
         <div class="grid grid-cols-2 gap-4">
             @include('ui.form.input', [
                 'model' => 'orderCustomer.last_name',
-                'label' => 'прізвище',
+                'label' => trans('base.last_name'),
                 'styleLabelText' => 'text-[12px] text-[#797878]',
             ])
             @include('ui.form.input', [
                 'model' => 'orderCustomer.first_name',
-                'label' => 'Iм`я',
+                'label' => trans('base.first_name'),
                 'styleLabelText' => 'text-[12px] text-[#797878]',
             ])
             @include('ui.form.input', [
                 'model' => 'orderCustomer.patronymics',
-                'label' => 'По батькові',
+                'label' => trans('base.patronymics'),
                 'styleLabelText' => 'text-[12px] text-[#797878]',
             ])
             @include('ui.form.input', [
                 'model' => 'orderCustomer.phone',
-                'label' => 'Мобільний телефон',
+                'label' => trans('base.phone'),
                 'type' => 'tel',
                 'styleLabelText' => 'text-[12px] text-[#797878]',
             ])
         </div>
         <div class="p-4 mt-4 bg-[rgba(255,169,0,.1)]  border border-[#ffa900] rounded-md">
-            Зверніть увагу, отримання замовлення за паспортом. Введіть прізвище, ім'я, по батькові як зазначено у
-            документі та мобільний номер телефону отримувача замовлення
+            {{ trans('base.orders_text') }}
         </div>
     </div>
     <div class="py-4">
         <div class="flex justify-between items-center">
             <div>
-                <h2 class="font-bold  text-xl">Товари </h2>
+                <h2 class="font-bold  text-xl">{{ trans('base.products') }} </h2>
             </div>
             @include('ui.form.buttonEdit', [
                 'click' => 'redirectBasket',
@@ -98,15 +97,14 @@
             @foreach (basket()->getItems() as $basketItem)
                 <li class="flex p-3 gap-2 items-center border-b">
                     <div class="h-[70px] w-[70px]">
-                        <img class="h-full object-cover" src="{{ $basketItem->sku->bannerImage->url }}"
-                            alt="">
+                        <img class="h-full object-cover" src="{{ $basketItem->sku->bannerImage->url }}" alt="">
                     </div>
                     <div class="flex justify-between items-center  w-full">
                         <div>
                             {{ $basketItem->sku->name }}
                         </div>
                         <div class="font-mono">
-                            {{ $basketItem->sku->price }} $ x {{ $basketItem->quantity }} од.
+                            {{ $basketItem->sku->price }} $ x {{ $basketItem->quantity }} {{ trans('base.item') }}.
                         </div>
                         <div class="font-bold text-base">
                             {{ $basketItem->sum }} $
@@ -118,7 +116,7 @@
     </div>
     <div class="py-4">
         <div class="flex justify-between items-center">
-            <h2 class="font-bold  text-xl">Оплата </h2>
+            <h2 class="font-bold  text-xl">{{ trans('base.payment') }}</h2>
             <div>
                 @error('orderPayment.payment_type')
                     <span class="text-xs text-error">{{ $message }}</span>
@@ -132,7 +130,7 @@
             <li x-on:click="show = false" wire:click='selectCashPayment' class="flex p-2 items-center">
                 @include('ui.form.radio', [
                     'model' => 'paymentType',
-                    'label' => 'Оплата під час отримання товару',
+                    'label' => trans('base.payment_upon_receipt_goods'),
                     'value' => 'cash',
                 ])
             </li>
@@ -142,7 +140,7 @@
 
                         <input x-bind:checked="show ? true : false" value="card" x-on:click="show = true"
                             type="radio" class="radio  checked:bg-red-500" />
-                        <span class="label-text mr-2">Оплатити зараз</span>
+                        <span class="label-text mr-2">{{ trans('base.pay_now') }}</span>
                     </label>
                 </div>
                 <div x-show="show">
@@ -171,7 +169,7 @@
     </div>
     <div class="py-4">
         <div class="flex justify-between items-center">
-            <h2 class="font-bold mb-2  text-xl">Доставка </h2>
+            <h2 class="font-bold mb-2  text-xl">{{ trans('base.delivery') }} </h2>
             <div>
                 @error('area')
                     <span class="text-xs text-error">{{ $message }}</span>
@@ -195,10 +193,10 @@
                     </svg>
                 </div>
                 <div class="text-left">
-                    <h3 class="font-bold">{{ $area['name'] ?? 'Ваша область' }}</h3>
-                    <span class="font-medium">{{ $city['name'] ?? 'Ваше місто' }}</span>
+                    <h3 class="font-bold">{{ $area['name'] ?? trans('base.y_area') }}</h3>
+                    <span class="font-medium">{{ $city['name'] ?? trans('base.y_city') }} </span>
                     <div>
-                        <span>{{ $warehouse['address'] ?? 'Адрес відділення нової пошти' }}</span>
+                        <span>{{ $warehouse['address'] ??  trans('base.y_warehouse')  }}</span>
                     </div>
                 </div>
             </div>
@@ -208,10 +206,10 @@
     <div class="p-5 bg-gray-100 rounded-lg">
         <div class="">
             <div class=" pb-4 border-b border-gray-300">
-                <h3 class="text-2xl mb-4 font-bold text-black">Разом</h3>
+                <h3 class="text-2xl mb-4 font-bold text-black">{{ trans('base.together') }}</h3>
                 <div class="flex items-center justify-between mb-2">
                     <h2 class="text-gray-600">
-                        {{ basket()->quantity() }} товарів:
+                        {{ basket()->quantity() }} {{ trans('base.products') }}:
                     </h2>
                     <span class="font-mono">
                         {{ basket()->sum() }} $
@@ -219,10 +217,10 @@
                 </div>
                 <div class="flex items-center justify-between">
                     <h2 class="text-gray-600">
-                        доставка:
+                        {{ trans('base.delivery') }}:
                     </h2>
                     <span class="">
-                        безкоштовна
+                        {{ trans('base.free') }}
                     </span>
                 </div>
                 <div>
@@ -231,106 +229,17 @@
             </div>
             <div class="flex py-4 border-b border-gray-300 mb-4 items-center justify-between">
                 <h2 class="text-gray-600">
-                    До сплати:
+                    {{ trans('base.to_be_paid') }}:
                 </h2>
                 <span class="font-bold text-2xl font-mono">
                     {{ basket()->sum() }} $
                 </span>
             </div>
-            <button wire:click='submit'
+            <button wire:click='submit' wire:loading.attr='disabled' wire:loading.class='opacity-50'
+                wire:target='submit'
                 class="focus:outline-none w-full text-white bg-green-600 hover:bg-green-500 text-lg transition-all focus:ring-4 focus:ring-green-300 font-medium rounded-lg px-5 py-2.5 mr-2 mb-2 ">
-                Замовлення підтверджую
+                {{ trans('base.confirm_order') }}
             </button>
         </div>
     </div>
 </div>
-
-
-
-{{-- <div class="w-full min-h-screen bg-neutral-content flex justify-center items-center">
-        <div class="w-11/12 bg-base-100 rounded-xl p-4 m-5">
-            <div class="mx-auto flex gap-10">
-                <div>
-                    <div>
-                        @component('ui.layouts.card')
-                            <p class="card-title">Замовник</p>
-                            @include('ui.form.input', [
-                                'model' => 'customer.full_name',
-                                'label' => 'ПІБ',
-                            ])
-                            @include('ui.form.input', [
-                                'model' => 'customer.phone',
-                                'label' => 'Телефон',
-                                'type' => 'number',
-                            ])
-                        @endcomponent
-                    </div>
-                    <div>
-                        @component('ui.layouts.card')
-                            <p class="card-title">Способи доставки</p>
-                            <div class="flex gap-5">
-                                @include('ui.form.radio', [
-                                    'label' => 'Доставка',
-                                    'model' => 'order.delivery_type',
-                                    'value' => 'delivery',
-                                ])
-                                @include('ui.form.radio', [
-                                    'label' => 'Самовивіз',
-                                    'model' => 'order.delivery_type',
-                                    'value' => 'self',
-                                ])
-                            </div>
-                        @endcomponent
-                    </div>
-                    @component('ui.layouts.card')
-                        <p class="card-title">Тип оплати</p>
-                        <select class="select select-bordered w-full max-w-xs" wire:model='order.payment_type'>
-                            <option selected value="liqpay">LiqPay</option>
-                        </select>
-                    @endcomponent
-                    @component('ui.layouts.card')
-                        <div>
-                            <button type="button"
-                                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm  px-8 py-4    focus:outline-none ">Оплатити
-                                замовлення</button>
-                        </div>
-                    @endcomponent
-                </div>
-                <div>
-                    @component('ui.layouts.card')
-                        <p class="card-title">Список покупок</p>
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            @foreach (basket()->getItems() as $basketItem)
-                                <div class="card bg-base-100 shadow-xl">
-                                    <figure><img class="w-full h-52 object-cover"
-                                            src="{{ asset($basketItem->sku->bannerImage->path) ?? asset('img/default-product-image.png') }}"
-                                            alt="{{ $basketItem->sku->name }}" />
-                                    </figure>
-                                    <div class="card-body">
-                                        <h2 class="card-title">{{ $basketItem->sku->name }}</h2>
-                                        <div class="flex justify-between">
-                                            <span>Кількість:</span><span>{{ $basketItem->quantity }}</span>
-                                        </div>
-                                        <div class="flex justify-between">
-                                            <span>Ціна:</span><span>{{ $basketItem->sum }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                        @if ($errors->any())
-                            <div class="card shadow-lg bg-base-100 mb-4">
-                                <div class="card-body ">
-                                    <div class="p-2">
-                                        @foreach ($errors->all() as $error)
-                                            <span class="text-xs text-error">{{ $error }}</span>
-                                        @endforeach
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
-                    @endcomponent
-                </div>
-            </div>
-        </div>
-    </div> --}}

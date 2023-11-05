@@ -2,7 +2,7 @@
     <div class="relative w-full ">
         <input wire:click="open" wire:model.debounce.500ms='value' type="text"
             class="@if ($open) rounded-t-md  border-gray-100 border-1 @else rounded-md @endIf bg-wgite relative z-10 w-full text-black px-4 py-2 transition-all  focus:outline-0"
-            placeholder="Пошук">
+            placeholder="{{ trans('base.search') }}">
         @if ($open)
             <div class="absolute z-10 border-t text-black  bg-white w-full py-2 rounded-b-lg shadow-2xl">
 

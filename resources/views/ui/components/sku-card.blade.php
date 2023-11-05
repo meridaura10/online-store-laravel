@@ -15,7 +15,7 @@
                 class="text-lg">$</span>
         </div>
         <div>
-           <span class="text-gray-600">сер.оцінка: <span class="text-black">{{ $sku->averageRating }}</span></span>
+           <span class="text-gray-600">{{ trans('base.average_score') }}: <span class="text-black">{{ $sku->averageRating }}</span></span>
         </div>
     </div>
 </div>

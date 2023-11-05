@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Product;
 
 use App\Actions\AlsoGet;
+use App\Http\Livewire\Header\Basket;
 use App\Models\OptionValue;
 use App\Models\Sku;
 use App\Models\SkuReview;
@@ -33,8 +34,6 @@ class Show extends Component
     }
     public function mount(Sku $sku)
     {
-        $this->also = AlsoGet::handle($sku->id);
-
         if (auth()->check()) {
             $this->review = SkuReview::make([
                 'rating' => 5,
@@ -52,6 +51,8 @@ class Show extends Component
             'product.skus.values.option.translations',
         );
 
+        $this->also = AlsoGet::handle($sku->product->id);
+
         $this->skus = $sku->product->skus;
 
         $this->reviews = $this->sku->reviews;
@@ -63,7 +64,7 @@ class Show extends Component
 
         $this->setOptionsSku();
 
-        $this->filter(null, false);
+        $this->continuations();
 
         $this->properties = $sku->product->propertiesValues->mapToGroups(function ($item) {
 
@@ -90,11 +91,15 @@ class Show extends Component
     public function addBasket()
     {
         basket()->createItem($this->sku);
+        $this->emit('updateQuantity')->to(Basket::class);
+    }
+    public function redirectBasket(){
+        return redirect()->route('basket.index');
     }
     private function setOptionsSku()
     {
         foreach ($this->sku->values as $value) {
-            $this->selectValues[$value->option->id] = $value->id;
+            $this->selectValues[$value->option_id] = $value->id;
         }
     }
     public function mapSkuToOptionsValues($skus, $reletion = null)
@@ -110,7 +115,7 @@ class Show extends Component
     public function selected(OptionValue $optionValue)
     {
         $this->selectValues[$optionValue->option->id] = $optionValue->id;
-        $this->filter($optionValue, true);
+        $this->filter($optionValue);
     }
     public function createReview()
     {
@@ -120,11 +125,11 @@ class Show extends Component
         $this->hidenModalReview();
         $this->reviews = $this->sku->reviews()->with('user')->get();
     }
-    public function filter(OptionValue|null $optionValue, $isRedirect)
+    public function filter(OptionValue|null $optionValue)
     {
-        $continuation = collect();
         $skus = [];
         $sku = null;
+
         foreach ($this->skus as $skuItem) {
             $isSet = false;
             $coincidence  = 0;
@@ -132,12 +137,9 @@ class Show extends Component
                 if ($optionValue && $optionValue->id === $value->id) {
                     $isSet = true;
                 }
-                if ($value->id == $this->selectValues[$value->option->id]) {
+                if ($value->id == $this->selectValues[$value->option_id]) {
                     $coincidence++;
                 }
-            }
-            if ($coincidence === $this->quantityOptions - 1) {
-                $continuation->push($skuItem);
             }
             if ($coincidence === $this->quantityOptions) {
                 $sku = $skuItem;
@@ -150,15 +152,24 @@ class Show extends Component
         if (!$sku) {
             ksort($skus);
             $sku = end($skus);
-            $this->sku = $sku;
-            $this->setOptionsSku();
-            return $this->filter(null, true);
         };
 
-        $this->sku = $sku;
-        
-        if ($isRedirect) {
-            return redirect()->route('product.show', $this->sku);
+        return redirect()->route('product.show', $sku);
+    }
+    public function continuations()
+    {
+        $continuation = collect();
+
+        foreach ($this->skus as $skuItem) {
+            $coincidence  = 0;
+            foreach ($skuItem->values as $value) {
+                if ($value->id == $this->selectValues[$value->option->id]) {
+                    $coincidence++;
+                }
+            }
+            if ($coincidence === $this->quantityOptions - 1) {
+                $continuation->push($skuItem);
+            }
         }
 
         $this->continuation = $this->mapSkuToOptionsValues($continuation, 'id');

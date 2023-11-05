@@ -53,25 +53,25 @@ abstract class ProductList extends Component
                 key: 'rank',
                 field: 'averageRating',
                 direction: 'desc',
-                title: 'за рейтингом',
+                title: trans('base.by_rating'),
                 scope: 'sortByRating',
             ),
             new Sort(
                 key: 'cheap',
                 field: 'price',
-                title: 'від дешевих до дорогих',
+                title: trans('base.from_cheap_to_expensive'),
             ),
             new Sort(
                 key: 'expensive',
                 field: 'price',
                 direction: 'desc',
-                title: 'від дорогих до дешевих',
+                title: trans('base.from_expensive_to_cheap'),
             ),
             new Sort(
                 key: 'novelty',
                 field: 'created_at',
                 direction: 'desc',
-                title: 'новинки',
+                title: trans('novelty'),
             ),
         );
     }
@@ -89,7 +89,7 @@ abstract class ProductList extends Component
             unset($this->f[$filterKey]);
         }
     }
-
+    
     public function fullClaerF()
     {
         $this->f = [];
